@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA1090B42C22617300BB1437 /* FileManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B22C22617300BB1437 /* FileManager.xcdatamodeld */; };
+		FA1090B82C2266A300BB1437 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B72C2266A300BB1437 /* CoreDataManager.swift */; };
+		FA1090BA2C22911100BB1437 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B92C22911100BB1437 /* HomeViewModel.swift */; };
+		FA355BCE2C21C1E6002FAC4A /* RecentsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA355BCD2C21C1E6002FAC4A /* RecentsViewController.swift */; };
+		FA37CA4B2C2944F900178886 /* FileAndFolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA4A2C2944F900178886 /* FileAndFolderManager.swift */; };
+		FA37CA4E2C2BB0F600178886 /* GridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA4C2C2BB0F600178886 /* GridCell.swift */; };
+		FA37CA4F2C2BB0F600178886 /* GridCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA37CA4D2C2BB0F600178886 /* GridCell.xib */; };
+		FA37CA522C2BBF4900178886 /* CameraActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA502C2BBF4900178886 /* CameraActionSheet.swift */; };
+		FA37CA532C2BBF4900178886 /* CameraActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA37CA512C2BBF4900178886 /* CameraActionSheet.xib */; };
 		FAF7661D2C1FE8AD00DE9D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */; };
 		FAF7661F2C1FE8AD00DE9D05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */; };
 		FAF766212C1FE8AD00DE9D05 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF766202C1FE8AD00DE9D05 /* HomeViewController.swift */; };
@@ -16,9 +25,19 @@
 		FAF766362C20041C00DE9D05 /* HeaderCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF766352C20041C00DE9D05 /* HeaderCollectionView.swift */; };
 		FAF766392C200FCA00DE9D05 /* OneCellCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF766372C200FCA00DE9D05 /* OneCellCollectionViewCell.swift */; };
 		FAF7663A2C200FCA00DE9D05 /* OneCellCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FAF766382C200FCA00DE9D05 /* OneCellCollectionViewCell.xib */; };
+		FAF7663C2C21B6B700DE9D05 /* TabBarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7663B2C21B6B700DE9D05 /* TabBarViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA1090B32C22617300BB1437 /* FileManager.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FileManager.xcdatamodel; sourceTree = "<group>"; };
+		FA1090B72C2266A300BB1437 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
+		FA1090B92C22911100BB1437 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		FA355BCD2C21C1E6002FAC4A /* RecentsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentsViewController.swift; sourceTree = "<group>"; };
+		FA37CA4A2C2944F900178886 /* FileAndFolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAndFolderManager.swift; sourceTree = "<group>"; };
+		FA37CA4C2C2BB0F600178886 /* GridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCell.swift; sourceTree = "<group>"; };
+		FA37CA4D2C2BB0F600178886 /* GridCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GridCell.xib; sourceTree = "<group>"; };
+		FA37CA502C2BBF4900178886 /* CameraActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraActionSheet.swift; sourceTree = "<group>"; };
+		FA37CA512C2BBF4900178886 /* CameraActionSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CameraActionSheet.xib; sourceTree = "<group>"; };
 		FAF766192C1FE8AD00DE9D05 /* FileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -30,6 +49,7 @@
 		FAF766352C20041C00DE9D05 /* HeaderCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderCollectionView.swift; sourceTree = "<group>"; };
 		FAF766372C200FCA00DE9D05 /* OneCellCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneCellCollectionViewCell.swift; sourceTree = "<group>"; };
 		FAF766382C200FCA00DE9D05 /* OneCellCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OneCellCollectionViewCell.xib; sourceTree = "<group>"; };
+		FAF7663B2C21B6B700DE9D05 /* TabBarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +63,52 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FA1090B52C2264FE00BB1437 /* Utility */ = {
+			isa = PBXGroup;
+			children = (
+				FA1090B72C2266A300BB1437 /* CoreDataManager.swift */,
+				FA37CA4A2C2944F900178886 /* FileAndFolderManager.swift */,
+			);
+			path = Utility;
+			sourceTree = "<group>";
+		};
+		FA1090B62C22659800BB1437 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		FA1090BB2C24D64900BB1437 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				FA1090BD2C24D67200BB1437 /* Others */,
+				FA1090BC2C24D65E00BB1437 /* Core */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		FA1090BC2C24D65E00BB1437 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				FAF766202C1FE8AD00DE9D05 /* HomeViewController.swift */,
+				FAF7663B2C21B6B700DE9D05 /* TabBarViewController.swift */,
+				FA355BCD2C21C1E6002FAC4A /* RecentsViewController.swift */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		FA1090BD2C24D67200BB1437 /* Others */ = {
+			isa = PBXGroup;
+			children = (
+				FA37CA502C2BBF4900178886 /* CameraActionSheet.swift */,
+				FAF766372C200FCA00DE9D05 /* OneCellCollectionViewCell.swift */,
+				FAF766352C20041C00DE9D05 /* HeaderCollectionView.swift */,
+				FA37CA4C2C2BB0F600178886 /* GridCell.swift */,
+			);
+			path = Others;
+			sourceTree = "<group>";
+		};
 		FAF766102C1FE8AD00DE9D05 = {
 			isa = PBXGroup;
 			children = (
@@ -62,6 +128,9 @@
 		FAF7661B2C1FE8AD00DE9D05 /* FileManager */ = {
 			isa = PBXGroup;
 			children = (
+				FA1090BB2C24D64900BB1437 /* Controllers */,
+				FA1090B62C22659800BB1437 /* Services */,
+				FA1090B52C2264FE00BB1437 /* Utility */,
 				FAF766332C1FF55700DE9D05 /* ViewModels */,
 				FAF766322C1FF53D00DE9D05 /* Models */,
 				FAF766312C1FF53300DE9D05 /* Views */,
@@ -76,9 +145,9 @@
 			children = (
 				FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */,
 				FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */,
-				FAF766222C1FE8AD00DE9D05 /* Main.storyboard */,
 				FAF766252C1FE8AF00DE9D05 /* Assets.xcassets */,
 				FAF766272C1FE8AF00DE9D05 /* LaunchScreen.storyboard */,
+				FA1090B22C22617300BB1437 /* FileManager.xcdatamodeld */,
 			);
 			path = Supporting;
 			sourceTree = "<group>";
@@ -86,8 +155,8 @@
 		FAF766312C1FF53300DE9D05 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				FAF766222C1FE8AD00DE9D05 /* Main.storyboard */,
 				FAF766342C2003F400DE9D05 /* CustomView */,
-				FAF766202C1FE8AD00DE9D05 /* HomeViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -102,6 +171,7 @@
 		FAF766332C1FF55700DE9D05 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				FA1090B92C22911100BB1437 /* HomeViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -109,9 +179,9 @@
 		FAF766342C2003F400DE9D05 /* CustomView */ = {
 			isa = PBXGroup;
 			children = (
-				FAF766352C20041C00DE9D05 /* HeaderCollectionView.swift */,
-				FAF766372C200FCA00DE9D05 /* OneCellCollectionViewCell.swift */,
+				FA37CA4D2C2BB0F600178886 /* GridCell.xib */,
 				FAF766382C200FCA00DE9D05 /* OneCellCollectionViewCell.xib */,
+				FA37CA512C2BBF4900178886 /* CameraActionSheet.xib */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -175,8 +245,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FAF766292C1FE8AF00DE9D05 /* LaunchScreen.storyboard in Resources */,
+				FA37CA4F2C2BB0F600178886 /* GridCell.xib in Resources */,
 				FAF766262C1FE8AF00DE9D05 /* Assets.xcassets in Resources */,
 				FAF766242C1FE8AD00DE9D05 /* Main.storyboard in Resources */,
+				FA37CA532C2BBF4900178886 /* CameraActionSheet.xib in Resources */,
 				FAF7663A2C200FCA00DE9D05 /* OneCellCollectionViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -190,9 +262,17 @@
 			files = (
 				FAF766212C1FE8AD00DE9D05 /* HomeViewController.swift in Sources */,
 				FAF766362C20041C00DE9D05 /* HeaderCollectionView.swift in Sources */,
+				FA37CA522C2BBF4900178886 /* CameraActionSheet.swift in Sources */,
 				FAF766392C200FCA00DE9D05 /* OneCellCollectionViewCell.swift in Sources */,
+				FA1090BA2C22911100BB1437 /* HomeViewModel.swift in Sources */,
+				FA1090B42C22617300BB1437 /* FileManager.xcdatamodeld in Sources */,
 				FAF7661D2C1FE8AD00DE9D05 /* AppDelegate.swift in Sources */,
+				FA355BCE2C21C1E6002FAC4A /* RecentsViewController.swift in Sources */,
+				FA37CA4B2C2944F900178886 /* FileAndFolderManager.swift in Sources */,
+				FA1090B82C2266A300BB1437 /* CoreDataManager.swift in Sources */,
+				FAF7663C2C21B6B700DE9D05 /* TabBarViewController.swift in Sources */,
 				FAF7661F2C1FE8AD00DE9D05 /* SceneDelegate.swift in Sources */,
+				FA37CA4E2C2BB0F600178886 /* GridCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -417,6 +497,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		FA1090B22C22617300BB1437 /* FileManager.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				FA1090B32C22617300BB1437 /* FileManager.xcdatamodel */,
+			);
+			currentVersion = FA1090B32C22617300BB1437 /* FileManager.xcdatamodel */;
+			path = FileManager.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = FAF766112C1FE8AD00DE9D05 /* Project object */;
 }
