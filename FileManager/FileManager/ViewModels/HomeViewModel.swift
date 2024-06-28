@@ -10,92 +10,206 @@ import UIKit
 
 
 class HomeViewModel {
-//    private var folders: [Folder] = []
-//    private var files: [File] = []
-    var parentFolder: URL? = nil
-    
-    private var files: [URL] = []
-    private var folders: [URL] = []
-    
-    let manager = FileAndFolderManager()
-    
-
     
     
-//    enum FolderOrFile {
-//        case folder(Folder)
-//        case file(File)
-//    }
-
+    var filterFolders: [FolderModel] = []
+    var filterFiles: [FileModel] = []
+    var isSearching = false
     
-    
-    var reloadUI: (() -> Void)?
-
-    var numberOfSections: Int {
-        return (folders.isEmpty && files.isEmpty) ? 0 : ((folders.isEmpty || files.isEmpty) ? 1 : 2)
-    }
-
-    func numberOfItemsInSection(_ section: Int) -> Int {
-        if section == 0 && !folders.isEmpty {
-            return folders.count
+    func filterContentForSearchText(_ searchText: String) {
+        if searchText.isEmpty {
+            isSearching = false
         } else {
-            return files.count
-        }
-    }
-
-    func itemForIndexPath(_ indexPath: IndexPath) -> URL {
-        return indexPath.section == 0 ? folders[indexPath.row] : files[indexPath.row]
-    }
-
-
-    func fetchItems() {
-        let directory = parentFolder ?? manager.getDirectory()!
-        folders.removeAll()
-        files.removeAll()
-
-        if let fetchedItems = manager.listContentsOfDirectory(directory: directory) {
-            for item in fetchedItems {
-                var isDirectory: ObjCBool = false
-                if FileManager.default.fileExists(atPath: item.path, isDirectory: &isDirectory) {
-                    if isDirectory.boolValue {
-                        folders.append(item)
-                    } else {
-                        files.append(item)
-                    }
-                }
-            }
-            print("Folders:", folders.map { $0.lastPathComponent })
-            print("Files:", files.map { $0.lastPathComponent })
-            reloadUI?()
-        }
-    }
-
-    // Save new folder or file to the set directory or default to ScannerPDF if parentFolder is nil
-    func saveNewItem(isFolder: Bool, name: String, image: UIImage?) {
-        let directory = parentFolder ?? manager.getDirectory()!
-        let newPath = directory.appendingPathComponent(name)
-        if isFolder {
-            try? FileManager.default.createDirectory(at: newPath, withIntermediateDirectories: true, attributes: nil)
-            print("Directory \(name) created.")
-        } else {
-            FileManager.default.createFile(atPath: newPath.path, contents: image?.pngData(), attributes: nil)
-            print("File \(name) created.")
-        }
-        fetchItems()  // Refresh the items list
-    }
-
-    // Delete an item from the set directory or default to ScannerPDF if parentFolder is nil
-    func deleteItem(at indexPath: IndexPath) {
-        let itemURL = indexPath.section == 0 ? folders[indexPath.row] : files[indexPath.row]
-        try? FileManager.default.removeItem(at: itemURL)
-        print("Item at \(itemURL) deleted.")
-        if indexPath.section == 0 {
-            folders.remove(at: indexPath.row)
-        } else {
-            files.remove(at: indexPath.row)
+            isSearching = true
+            filterFolders = currentFolder?.subFolders.filter { $0.name!.lowercased().contains(searchText.lowercased()) } ?? []
+            filterFiles = currentFolder?.files.filter { $0.name!.lowercased().contains(searchText.lowercased()) } ?? []
         }
         reloadUI?()
     }
-}
     
+    
+    
+    let fileAndFolderManager = FileAndFolderManager.shared
+    
+    var rootFolder: FolderModel?
+    var currentFolder: FolderModel?
+    
+    enum FolderOrFile {
+        case folder(FolderModel)
+        case file(FileModel)
+    }
+    
+    
+    
+    
+    var reloadUI: (() -> Void)?
+    
+    init() {
+        if let rootDirectory = fileAndFolderManager.getDirectory() {
+            rootFolder = FolderModel(url: rootDirectory)
+            currentFolder = rootFolder
+        }
+    }
+    
+    
+    
+    
+    var numberOfSections: Int {
+        
+        if isSearching {
+            let hasSubFolders = !filterFolders.isEmpty
+            let hasFiles = !filterFiles.isEmpty
+            if hasSubFolders && hasFiles {
+                return 2
+            } else if hasSubFolders || hasFiles {
+                return 1
+            } else {
+                return 0
+            }
+        } else {
+            guard let currentFolder = currentFolder else { return 0 }
+            let hasSubFolders = !currentFolder.subFolders.isEmpty
+            let hasFiles = !currentFolder.files.isEmpty
+            if hasSubFolders && hasFiles {
+                return 2
+            } else if hasSubFolders || hasFiles {
+                return 1
+            } else {
+                return 0
+            }
+        }
+        
+        
+    }
+    
+    
+    func numberOfItemsInSection(_ section: Int) -> Int {
+        if isSearching {
+            if section == 0 && !filterFolders.isEmpty {
+                return filterFolders.count
+            } else {
+                return filterFiles.count
+            }
+        } else {
+            guard let currentFolder = currentFolder else { return 0 }
+            if section == 0 && !currentFolder.subFolders.isEmpty {
+                return currentFolder.subFolders.count
+            } else {
+                return currentFolder.files.count
+            }
+        }
+
+    }
+    
+    
+    func itemForIndexPath(_ indexPath: IndexPath) -> FolderOrFile? {
+        
+        if isSearching {
+            if indexPath.section == 0 {
+                if filterFolders.count != 0 {
+                    return .folder(filterFolders[indexPath.row])
+                } else {
+                    return .file(filterFiles[indexPath.row])
+                }
+                
+            } else {
+                return .file(filterFiles[indexPath.row])
+            }
+        } else {
+            guard let currentFolder = currentFolder else { return nil }
+            if indexPath.section == 0 {
+                if currentFolder.subFolders.count != 0 {
+                    return .folder(currentFolder.subFolders[indexPath.row])
+                } else {
+                    return .file(currentFolder.files[indexPath.row])
+                }
+                
+            } else {
+                return .file(currentFolder.files[indexPath.row])
+            }
+        }
+    }
+    
+    
+    
+    // MARK: - Define new HomeViewModel
+    
+    
+    
+    func createFolder(named name: String) {
+        guard let currentFolder = currentFolder else { return }
+        fileAndFolderManager.createFolder(named: name, in: currentFolder.url!)
+        reloadCurrentFolder()
+        reloadUI?()
+    }
+    
+    func deleteItem(at url: URL) {
+        fileAndFolderManager.deleteItem(at: url)
+        reloadCurrentFolder()
+        reloadUI?()
+    }
+    
+    func moveItem(from: URL, to: URL) {
+        fileAndFolderManager.moveItem(from: from, to: to)
+        reloadCurrentFolder()
+        reloadUI?()
+    }
+    
+    func copyItem(from: URL, to: URL) {
+        fileAndFolderManager.copyItem(from: from, to: to)
+        reloadCurrentFolder()
+        reloadUI?()
+    }
+    
+    func navigateToFolder(_ folder: FolderModel) {
+        currentFolder = folder
+        reloadUI?()
+    }
+    
+    func navigateBack() {
+        if currentFolder?.url != rootFolder?.url {
+            currentFolder = rootFolder
+            reloadUI?()
+        }
+    }
+    
+    func reloadCurrentFolder() {
+        if let currentFolderURL = currentFolder?.url {
+            currentFolder = FolderModel(url: currentFolderURL)
+            sortItems()
+            reloadUI?()
+        }
+    }
+    
+    
+    func sortItems() {
+        switch UserDefaultsManager.shared.sortPreference {
+        case .name:
+            currentFolder?.subFolders.sort { $0.name! < $1.name! }
+            currentFolder?.files.sort { $0.name! < $1.name! }
+        case .size:
+            if isSearching {
+                filterFolders.sort {
+                    ($0.files.count + $0.subFolders.count) > ($1.files.count + $1.subFolders.count)
+                }
+                filterFiles.sort {
+                    $0.size! < $1.size!
+                }
+            } else {
+                currentFolder?.subFolders.sort {
+                    ($0.files.count + $0.subFolders.count) > ($1.files.count + $1.subFolders.count)
+                }
+                currentFolder?.files.sort {
+                    $0.size! < $1.size!
+                }
+            }
+        case .date:
+            currentFolder?.files.sort {
+                $0.creationDate! > $1.creationDate!
+            }
+        }
+    }
+    
+}
+
 

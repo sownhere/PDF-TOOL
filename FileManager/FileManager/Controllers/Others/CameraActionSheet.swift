@@ -35,3 +35,15 @@ class CameraActionSheet: UIViewController {
     
     
 }
+
+extension CameraActionSheet {
+    
+    static var identifier: String {
+        return "CameraActionSheet"
+    }
+    
+    static var nibName: String {
+        return "CameraActionSheet"
+    }
+}
+

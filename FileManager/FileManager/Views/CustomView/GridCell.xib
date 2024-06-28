@@ -19,28 +19,25 @@
                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Sdz-qi-aJu">
-                        <rect key="frame" x="0.0" y="0.0" width="120" height="100"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="100" id="kWU-n3-iwM"/>
-                        </constraints>
+                        <rect key="frame" x="0.0" y="0.0" width="120" height="85.666666666666671"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mXP-yr-pjL">
-                        <rect key="frame" x="10" y="100" width="80" height="18"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                        <rect key="frame" x="10" y="85.666666666666671" width="40.333333333333336" height="20"/>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="Drv-RP-EvK"/>
+                        </constraints>
+                        <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Size" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="jC4-EF-F5d">
-                        <rect key="frame" x="9.9999999999999982" y="123" width="27.333333333333329" height="17"/>
+                        <rect key="frame" x="9.9999999999999982" y="110.66666666666667" width="27.333333333333329" height="29.333333333333329"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <color key="textColor" name="AccentColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Mku-0Q-10J">
-                        <rect key="frame" x="90" y="100" width="20" height="40"/>
-                        <constraints>
-                            <constraint firstAttribute="width" constant="20" id="gke-VX-7Ms"/>
-                        </constraints>
+                        <rect key="frame" x="105" y="105.66666666666667" width="5" height="34.333333333333329"/>
                         <color key="tintColor" systemColor="labelColor"/>
                         <state key="normal" title="Button"/>
                         <buttonConfiguration key="configuration" style="plain" image="point.bottomleft.forward.to.arrowtriangle.uturn.scurvepath.fill" catalog="system"/>
@@ -56,11 +53,12 @@
                 <constraint firstAttribute="trailing" secondItem="Sdz-qi-aJu" secondAttribute="trailing" id="F6n-HZ-d9X"/>
                 <constraint firstItem="mXP-yr-pjL" firstAttribute="top" secondItem="Sdz-qi-aJu" secondAttribute="bottom" id="MBz-bG-p7W"/>
                 <constraint firstItem="mXP-yr-pjL" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="MLQ-CP-bRz"/>
-                <constraint firstItem="Mku-0Q-10J" firstAttribute="top" secondItem="Sdz-qi-aJu" secondAttribute="bottom" id="eya-lR-DZl"/>
+                <constraint firstItem="jC4-EF-F5d" firstAttribute="top" secondItem="mXP-yr-pjL" secondAttribute="bottom" constant="5" id="Wsr-Vk-crH"/>
+                <constraint firstItem="Mku-0Q-10J" firstAttribute="top" secondItem="mXP-yr-pjL" secondAttribute="bottom" id="eya-lR-DZl"/>
                 <constraint firstItem="jC4-EF-F5d" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" constant="10" id="kpm-HJ-USa"/>
-                <constraint firstItem="Mku-0Q-10J" firstAttribute="leading" secondItem="mXP-yr-pjL" secondAttribute="trailing" id="paJ-XH-Myn"/>
                 <constraint firstItem="Sdz-qi-aJu" firstAttribute="top" secondItem="gTV-IL-0wX" secondAttribute="top" id="pgg-sj-Y9X"/>
                 <constraint firstItem="Sdz-qi-aJu" firstAttribute="leading" secondItem="gTV-IL-0wX" secondAttribute="leading" id="ugG-Lh-AgJ"/>
+                <constraint firstItem="Mku-0Q-10J" firstAttribute="leading" secondItem="Sdz-qi-aJu" secondAttribute="trailing" constant="-15" id="xSb-T9-JZH"/>
             </constraints>
             <userDefinedRuntimeAttributes>
                 <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
@@ -68,9 +66,10 @@
                 </userDefinedRuntimeAttribute>
             </userDefinedRuntimeAttributes>
             <connections>
-                <outlet property="imageView" destination="Sdz-qi-aJu" id="wig-Zj-wPf"/>
-                <outlet property="nameLable" destination="mXP-yr-pjL" id="bhH-DZ-WM9"/>
-                <outlet property="sizeLable" destination="jC4-EF-F5d" id="LFY-49-5DQ"/>
+                <outlet property="imageView" destination="Sdz-qi-aJu" id="f8t-wK-d9x"/>
+                <outlet property="moreBtn" destination="Mku-0Q-10J" id="BQo-k1-KEB"/>
+                <outlet property="nameLabel" destination="mXP-yr-pjL" id="pkJ-I8-JcV"/>
+                <outlet property="sizeLabel" destination="jC4-EF-F5d" id="qGu-Ke-MkP"/>
             </connections>
             <point key="canvasLocation" x="106.87022900763358" y="19.718309859154932"/>
         </collectionViewCell>

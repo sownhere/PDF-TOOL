@@ -51,3 +51,14 @@ class HeaderCollectionView: UICollectionReusableView {
         delegate?.didTapSortLabel()
     }
 }
+
+extension HeaderCollectionView {
+    
+    static var reuseIdentifier: String {
+        return "HeaderCollectionView"
+    }
+    
+    static var nibName: String {
+        return "HeaderCollectionView"
+    }
+}

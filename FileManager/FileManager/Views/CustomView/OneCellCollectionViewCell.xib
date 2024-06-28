@@ -82,11 +82,11 @@
                 </userDefinedRuntimeAttribute>
             </userDefinedRuntimeAttributes>
             <connections>
-                <outlet property="dateCreatedLable" destination="f1E-ye-187" id="gML-5c-E09"/>
-                <outlet property="imageView" destination="bY5-gw-r4N" id="GIg-56-vL9"/>
+                <outlet property="dateCreatedLabel" destination="f1E-ye-187" id="pT9-9u-JWX"/>
+                <outlet property="imageView" destination="bY5-gw-r4N" id="ZtR-de-Bds"/>
                 <outlet property="moreBtn" destination="jVV-mT-d88" id="bYV-zu-ARB"/>
-                <outlet property="nameLable" destination="wof-eO-E0V" id="v0O-5O-Cqc"/>
-                <outlet property="sizeLable" destination="L14-VU-agT" id="vJI-2J-X1J"/>
+                <outlet property="nameLabel" destination="wof-eO-E0V" id="Ehk-F1-0cZ"/>
+                <outlet property="sizeLabel" destination="L14-VU-agT" id="jL1-f2-0LU"/>
             </connections>
             <point key="canvasLocation" x="85.496183206106863" y="19.014084507042256"/>
         </collectionViewCell>
