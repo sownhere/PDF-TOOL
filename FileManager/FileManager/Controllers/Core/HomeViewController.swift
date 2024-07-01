@@ -9,10 +9,51 @@ import UIKit
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, HeaderCollectionViewDelegate {
     
+    
+    // MARK: - Setup Custom toolbar
+    
+    var customToolbar: CustomToolbar!
+    
+    private func setupCustomToolbar() {
+        let tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 49
+        customToolbar = CustomToolbar(frame: CGRect(x: 0, y: view.frame.size.height - tabBarHeight, width: view.frame.size.width, height: tabBarHeight))
+        customToolbar.backgroundColor = .darkGray
+        customToolbar.buttonAction = { [weak self] buttonIndex in
+            switch buttonIndex {
+            case 0:
+                self?.cutOrPasteAction()
+            case 1:
+                self?.copyAction()
+            case 2:
+                self?.renameAction()
+            case 3:
+                self?.deleteAction()
+            default:
+                break
+            }
+        }
+        self.view.addSubview(customToolbar)
+        customToolbar.isHidden = true
+    }
+    
+    
+    
+    private func updateToolbarButtons() {
+        customToolbar.refreshToolbarState()
+    }
+    
+    private func exitEditingMode() {
+        isEditingMode = false
+        ToolbarStateManager.shared.selectedItems.removeAll()
+        updateToolbarButtons()
+        collectionView.reloadData()
+    }
+    
+    
+    
     // MARK: - Header Delegate
     func didTapViewToggleButton() {
         isGrid.toggle()
-        createCollectionViewLayout()
         collectionView.reloadData()
     }
     
@@ -61,6 +102,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     func showCameraActionSheet() {
         let cameraActionSheet = CameraActionSheet(nibName: "CameraActionSheet", bundle: nil)
+        cameraActionSheet.viewModel = self.viewModel
         let nav = UINavigationController(rootViewController: cameraActionSheet)
         
         nav.modalPresentationStyle = .pageSheet
@@ -73,6 +115,16 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     @objc func cameraButtonTapped() {
         showCameraActionSheet()
+    }
+    
+    var isEditingMode: Bool = false {
+        didSet {
+            
+            ToolbarStateManager.shared.selectedItems.removeAll()
+            updateUIForEditingMode()
+            
+            
+        }
     }
     
     var isGrid: Bool {
@@ -96,7 +148,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.viewModel.reloadCurrentFolder()
-        print(self.viewModel.currentFolder as Any)
+        print(self.viewModel.rootFolder?.name! ?? "Khong in ra được tên root folder")
+        print(self.viewModel.currentFolder?.name! ?? "Khong in ra ten cua thu muc hien tai duoc")
     }
     
     override func viewDidLoad() {
@@ -113,11 +166,33 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         }
         self.updateBackgroundImageViewVisibility()
         
-//        let searchController = UISearchController(searchResultsController: nil)
-//        navigationItem.searchController = searchController
-//        navigationItem.searchController?.searchBar.delegate = self
+        //        let searchController = UISearchController(searchResultsController: nil)
+        //        navigationItem.searchController = searchController
+        //        navigationItem.searchController?.searchBar.delegate = self
         setupSearchController()
+        setupEditingBarButton()
+        setupCustomToolbar()
         
+    }
+    
+    func setupEditingBarButton() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(toggleEditingMode))
+    }
+    
+    @objc func toggleEditingMode() {
+        isEditingMode = !isEditingMode
+        print("Chế độ chỉnh sửa được chuyển sang: \(isEditingMode)")
+        collectionView.reloadData()
+        collectionView.layoutIfNeeded()
+    }
+    
+    
+    func updateUIForEditingMode() {
+        navigationItem.rightBarButtonItem?.title = isEditingMode ? "Done" : "Edit"
+        collectionView.reloadData()  // Reload to update cell configuration based on editing mode
+        customToolbar.refreshToolbarState()
+        customToolbar.isHidden = !isEditingMode
+        self.tabBarController?.tabBar.isHidden = isEditingMode
     }
     
     // MARK: - CollectionView Delegate
@@ -130,9 +205,9 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-
-            return viewModel.numberOfItemsInSection(section)
-
+        
+        return viewModel.numberOfItemsInSection(section)
+        
         
     }
     
@@ -140,16 +215,16 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         if isGrid {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GridCell.reuseIdentifier, for: indexPath) as! GridCell
             if let item = viewModel.itemForIndexPath(indexPath) {
-                cell.configure(with: item)
+                cell.configure(with: item, isEditingMode: isEditingMode)
             }
-            
+            cell.delegate = self
             return cell
         } else {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: OneCellCollectionViewCell.reuseIdentifier, for: indexPath) as! OneCellCollectionViewCell
             if let item = viewModel.itemForIndexPath(indexPath) {
-                cell.configure(with: item)
+                cell.configure(with: item, isEditingMode: isEditingMode)
             }
-            
+            cell.delegate = self
             return cell
         }
     }
@@ -209,14 +284,70 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let item = viewModel.itemForIndexPath(indexPath) else { return }
-        
-        switch item {
-        case .folder(let folder):
-            showNewHomeView(with: folder)
-        case .file(_):
-            // Handle file selection, if needed
-            break
+        if isEditingMode {
+            if let cell = collectionView.cellForItem(at: indexPath) as? OneCellCollectionViewCell {
+                cell.moreBtn.isSelected = !cell.moreBtn.isSelected
+                
+                guard let item = viewModel.itemForIndexPath(indexPath) else { return }
+                switch item {
+                case .file(let file):
+                    if cell.moreBtn.isSelected {
+                        ToolbarStateManager.shared.selectedItems.append(file.url!)
+                    } else {
+                        ToolbarStateManager.shared.selectedItems.removeAll { URL in
+                            URL == file.url
+                        }
+                    }
+                  
+                    customToolbar.refreshToolbarState()
+                case .folder(let folder):
+                    if cell.moreBtn.isSelected {
+                        ToolbarStateManager.shared.selectedItems.append(folder.url!)
+                    } else {
+                        ToolbarStateManager.shared.selectedItems.removeAll { URL in
+                            URL == folder.url
+                        }
+                    }
+                    
+                    customToolbar.refreshToolbarState()
+                }
+            } else {
+                if let cell = collectionView.cellForItem(at: indexPath) as? GridCell {
+                    cell.moreBtn.isSelected = !cell.moreBtn.isSelected
+                    guard let item = viewModel.itemForIndexPath(indexPath) else { return }
+                    switch item {
+                    case .file(let file):
+                        if cell.moreBtn.isSelected {
+                            ToolbarStateManager.shared.selectedItems.append(file.url!)
+                        } else {
+                            ToolbarStateManager.shared.selectedItems.removeAll { URL in
+                                URL == file.url
+                            }
+                        }
+                      
+                        customToolbar.refreshToolbarState()
+                    case .folder(let folder):
+                        if cell.moreBtn.isSelected {
+                            ToolbarStateManager.shared.selectedItems.append(folder.url!)
+                        } else {
+                            ToolbarStateManager.shared.selectedItems.removeAll { URL in
+                                URL == folder.url
+                            }
+                        }
+                        customToolbar.refreshToolbarState()
+                    }
+                }
+            }
+        } else {
+            guard let item = viewModel.itemForIndexPath(indexPath) else { return }
+            
+            switch item {
+            case .folder(let folder):
+                showNewHomeView(with: folder)
+            case .file(_):
+                // Handle file selection, if needed
+                break
+            }
         }
     }
     
@@ -239,7 +370,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     func createCollectionViewLayout() {
+        
+        collectionView.collectionViewLayout.invalidateLayout()
+        
         let layout = UICollectionViewFlowLayout()
+        layout.invalidateLayout()
         
         if isGrid {
             let width = (collectionView.frame.width - 60) * (1/3)
@@ -258,16 +393,16 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     func setupSearchController() {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchBar.delegate = self
-
+        
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = true
-
+        
         // Make the search bar active
         searchController.isActive = true
         searchController.searchBar.becomeFirstResponder() // This will make the keyboard appear when the search bar is tapped.
     }
-
+    
     
     func setupCollectionView() {
         createCollectionViewLayout()
@@ -329,6 +464,20 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             backgroundImageView.isHidden = false
         }
     }
+    
+    func showMoreButtonActionSheet(viewModel: HomeViewModel, url: URL) {
+        let moreButtonActionSheet = MoreButtonActionSheetViewController(nibName: MoreButtonActionSheetViewController.nibName, bundle: nil)
+        moreButtonActionSheet.itemURL = url
+        moreButtonActionSheet.viewModel = self.viewModel
+        let nav = UINavigationController(rootViewController: moreButtonActionSheet)
+        
+        nav.modalPresentationStyle = .pageSheet
+        
+        if let sheet = nav.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+        }
+        present(nav, animated: true, completion: nil)
+    }
 }
 
 extension HomeViewController {
@@ -347,6 +496,121 @@ extension HomeViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         viewModel.isSearching = false
         viewModel.reloadUI?()
+    }
+}
+
+extension HomeViewController: GridCellDelegate, OneCellDelegate {
+    
+    func didTapMoreButton(in cell: GridCell, isEditing: Bool) {
+        if !isEditing {
+            guard let indexPath = collectionView.indexPath(for: cell),
+                  let item = viewModel.itemForIndexPath(indexPath) else {
+                print("Failed to get item for index path")
+                return
+            }
+            
+            switch item {
+            case .file(let file):
+                let url = file.url
+                if let url = url {
+                    showMoreButtonActionSheet(viewModel: viewModel, url: url)
+                }
+            case .folder(let folder):
+                let url = folder.url
+                if let url = url {
+                    showMoreButtonActionSheet(viewModel: viewModel, url: url)
+                }
+            }
+        } else {
+            customToolbar.refreshToolbarState()
+        }
+        
+    }
+    
+    func didTapMoreButton(in cell: OneCellCollectionViewCell, isEditing: Bool) {
+        if !isEditing {
+            guard let indexPath = collectionView.indexPath(for: cell),
+                  let item = viewModel.itemForIndexPath(indexPath) else {
+                print("Failed to get item for index path")
+                return
+            }
+            
+            switch item {
+            case .file(let file):
+                let url = file.url
+                if let url = url {
+                    showMoreButtonActionSheet(viewModel: viewModel, url: url)
+                }
+            case .folder(let folder):
+                let url = folder.url
+                if let url = url {
+                    showMoreButtonActionSheet(viewModel: viewModel, url: url)
+                }
+            }
+        } else {
+            customToolbar.refreshToolbarState()
+        }
+    }
+}
+
+
+// MARK: - set up feature edit toolbar action
+extension HomeViewController {
+    private func cutOrPasteAction() {
+        if ToolbarStateManager.shared.cutItems.isEmpty {
+            viewModel.cutSelectedItems()
+        } else {
+            viewModel.pasteCutItems()
+        }
+        exitEditingMode()
+    }
+    
+    private func copyAction() {
+        if ToolbarStateManager.shared.copyItems.isEmpty {
+            viewModel.copySelectedItems()
+        } else {
+            viewModel.pasteCopyItems()
+        }
+        
+        exitEditingMode()
+    }
+    
+    private func renameAction() {
+        guard ToolbarStateManager.shared.selectedItems.count == 1, let itemToRename = ToolbarStateManager.shared.selectedItems.first else { return }
+        
+        let alertController = UIAlertController(title: "Rename", message: "Enter a new name", preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.text = itemToRename.lastPathComponent
+        }
+        
+        let renameAction = UIAlertAction(title: "Rename", style: .default) { [weak self] _ in
+            guard let newName = alertController.textFields?.first?.text, !newName.isEmpty else { return }
+            self?.viewModel.renameItem(at: itemToRename, to: newName)
+            self?.exitEditingMode()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(renameAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
+    }
+    
+    private func deleteAction() {
+        let alertController = UIAlertController(title: "Delete Items", message: "Are you sure you want to delete the selected items?", preferredStyle: .alert)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive) { [weak self] _ in
+            self?.viewModel.deleteSelectedItems()
+            self?.exitEditingMode()
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(deleteAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
 }
 

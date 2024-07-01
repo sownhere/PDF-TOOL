@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FA0F1A832C32E41400BECA2F /* CustomToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1A822C32E41400BECA2F /* CustomToolbar.swift */; };
+		FA0F1A852C32EB4800BECA2F /* ToolbarStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1A842C32EB4800BECA2F /* ToolbarStateManager.swift */; };
 		FA1090B42C22617300BB1437 /* FileManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B22C22617300BB1437 /* FileManager.xcdatamodeld */; };
 		FA1090B82C2266A300BB1437 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B72C2266A300BB1437 /* CoreDataManager.swift */; };
 		FA1090BA2C22911100BB1437 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B92C22911100BB1437 /* HomeViewModel.swift */; };
@@ -14,11 +16,13 @@
 		FA37CA4B2C2944F900178886 /* FileAndFolderManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA4A2C2944F900178886 /* FileAndFolderManager.swift */; };
 		FA37CA4E2C2BB0F600178886 /* GridCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA4C2C2BB0F600178886 /* GridCell.swift */; };
 		FA37CA4F2C2BB0F600178886 /* GridCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA37CA4D2C2BB0F600178886 /* GridCell.xib */; };
-		FA37CA522C2BBF4900178886 /* CameraActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA502C2BBF4900178886 /* CameraActionSheet.swift */; };
+		FA37CA522C2BBF4900178886 /* CameraActionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA502C2BBF4900178886 /* CameraActionSheetViewController.swift */; };
 		FA37CA532C2BBF4900178886 /* CameraActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA37CA512C2BBF4900178886 /* CameraActionSheet.xib */; };
 		FA37CA5B2C2D574400178886 /* FileModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA5A2C2D574400178886 /* FileModel.swift */; };
 		FA37CA5D2C2D575500178886 /* FolderModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA5C2C2D575500178886 /* FolderModel.swift */; };
 		FA37CA5F2C2E4A2000178886 /* UserDefaultsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA37CA5E2C2E4A2000178886 /* UserDefaultsManager.swift */; };
+		FA81DBEB2C30A22B00428A09 /* MoreButtonActionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA81DBE92C30A22B00428A09 /* MoreButtonActionSheetViewController.swift */; };
+		FA81DBEC2C30A22B00428A09 /* MoreButtonActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA81DBEA2C30A22B00428A09 /* MoreButtonActionSheet.xib */; };
 		FAF7661D2C1FE8AD00DE9D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */; };
 		FAF7661F2C1FE8AD00DE9D05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */; };
 		FAF766212C1FE8AD00DE9D05 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF766202C1FE8AD00DE9D05 /* HomeViewController.swift */; };
@@ -32,6 +36,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		FA0F1A822C32E41400BECA2F /* CustomToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolbar.swift; sourceTree = "<group>"; };
+		FA0F1A842C32EB4800BECA2F /* ToolbarStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarStateManager.swift; sourceTree = "<group>"; };
 		FA1090B32C22617300BB1437 /* FileManager.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FileManager.xcdatamodel; sourceTree = "<group>"; };
 		FA1090B72C2266A300BB1437 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
 		FA1090B92C22911100BB1437 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -39,11 +45,13 @@
 		FA37CA4A2C2944F900178886 /* FileAndFolderManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAndFolderManager.swift; sourceTree = "<group>"; };
 		FA37CA4C2C2BB0F600178886 /* GridCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GridCell.swift; sourceTree = "<group>"; };
 		FA37CA4D2C2BB0F600178886 /* GridCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = GridCell.xib; sourceTree = "<group>"; };
-		FA37CA502C2BBF4900178886 /* CameraActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraActionSheet.swift; sourceTree = "<group>"; };
+		FA37CA502C2BBF4900178886 /* CameraActionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraActionSheetViewController.swift; sourceTree = "<group>"; };
 		FA37CA512C2BBF4900178886 /* CameraActionSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CameraActionSheet.xib; sourceTree = "<group>"; };
 		FA37CA5A2C2D574400178886 /* FileModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileModel.swift; sourceTree = "<group>"; };
 		FA37CA5C2C2D575500178886 /* FolderModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FolderModel.swift; sourceTree = "<group>"; };
 		FA37CA5E2C2E4A2000178886 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
+		FA81DBE92C30A22B00428A09 /* MoreButtonActionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreButtonActionSheetViewController.swift; sourceTree = "<group>"; };
+		FA81DBEA2C30A22B00428A09 /* MoreButtonActionSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MoreButtonActionSheet.xib; sourceTree = "<group>"; };
 		FAF766192C1FE8AD00DE9D05 /* FileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -75,6 +83,7 @@
 				FA1090B72C2266A300BB1437 /* CoreDataManager.swift */,
 				FA37CA4A2C2944F900178886 /* FileAndFolderManager.swift */,
 				FA37CA5E2C2E4A2000178886 /* UserDefaultsManager.swift */,
+				FA0F1A842C32EB4800BECA2F /* ToolbarStateManager.swift */,
 			);
 			path = Utility;
 			sourceTree = "<group>";
@@ -108,10 +117,12 @@
 		FA1090BD2C24D67200BB1437 /* Others */ = {
 			isa = PBXGroup;
 			children = (
-				FA37CA502C2BBF4900178886 /* CameraActionSheet.swift */,
+				FA81DBE92C30A22B00428A09 /* MoreButtonActionSheetViewController.swift */,
+				FA37CA502C2BBF4900178886 /* CameraActionSheetViewController.swift */,
 				FAF766372C200FCA00DE9D05 /* OneCellCollectionViewCell.swift */,
 				FAF766352C20041C00DE9D05 /* HeaderCollectionView.swift */,
 				FA37CA4C2C2BB0F600178886 /* GridCell.swift */,
+				FA0F1A822C32E41400BECA2F /* CustomToolbar.swift */,
 			);
 			path = Others;
 			sourceTree = "<group>";
@@ -191,6 +202,7 @@
 				FA37CA4D2C2BB0F600178886 /* GridCell.xib */,
 				FAF766382C200FCA00DE9D05 /* OneCellCollectionViewCell.xib */,
 				FA37CA512C2BBF4900178886 /* CameraActionSheet.xib */,
+				FA81DBEA2C30A22B00428A09 /* MoreButtonActionSheet.xib */,
 			);
 			path = CustomView;
 			sourceTree = "<group>";
@@ -256,6 +268,7 @@
 				FAF766292C1FE8AF00DE9D05 /* LaunchScreen.storyboard in Resources */,
 				FA37CA4F2C2BB0F600178886 /* GridCell.xib in Resources */,
 				FAF766262C1FE8AF00DE9D05 /* Assets.xcassets in Resources */,
+				FA81DBEC2C30A22B00428A09 /* MoreButtonActionSheet.xib in Resources */,
 				FAF766242C1FE8AD00DE9D05 /* Main.storyboard in Resources */,
 				FA37CA532C2BBF4900178886 /* CameraActionSheet.xib in Resources */,
 				FAF7663A2C200FCA00DE9D05 /* OneCellCollectionViewCell.xib in Resources */,
@@ -271,13 +284,16 @@
 			files = (
 				FAF766212C1FE8AD00DE9D05 /* HomeViewController.swift in Sources */,
 				FAF766362C20041C00DE9D05 /* HeaderCollectionView.swift in Sources */,
-				FA37CA522C2BBF4900178886 /* CameraActionSheet.swift in Sources */,
+				FA37CA522C2BBF4900178886 /* CameraActionSheetViewController.swift in Sources */,
 				FAF766392C200FCA00DE9D05 /* OneCellCollectionViewCell.swift in Sources */,
 				FA1090BA2C22911100BB1437 /* HomeViewModel.swift in Sources */,
 				FA1090B42C22617300BB1437 /* FileManager.xcdatamodeld in Sources */,
 				FA37CA5F2C2E4A2000178886 /* UserDefaultsManager.swift in Sources */,
+				FA81DBEB2C30A22B00428A09 /* MoreButtonActionSheetViewController.swift in Sources */,
 				FAF7661D2C1FE8AD00DE9D05 /* AppDelegate.swift in Sources */,
 				FA355BCE2C21C1E6002FAC4A /* RecentsViewController.swift in Sources */,
+				FA0F1A852C32EB4800BECA2F /* ToolbarStateManager.swift in Sources */,
+				FA0F1A832C32E41400BECA2F /* CustomToolbar.swift in Sources */,
 				FA37CA4B2C2944F900178886 /* FileAndFolderManager.swift in Sources */,
 				FA37CA5B2C2D574400178886 /* FileModel.swift in Sources */,
 				FA1090B82C2266A300BB1437 /* CoreDataManager.swift in Sources */,
@@ -434,6 +450,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S855QLC6LB;
@@ -451,6 +468,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sown.FileManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -464,6 +482,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = S855QLC6LB;
@@ -481,6 +500,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.sown.FileManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;

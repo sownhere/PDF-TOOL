@@ -60,6 +60,19 @@ class FileAndFolderManager {
             print("Folder \(name) already exists.")
         }
     }
+    
+    
+    // Create a file with specified content in a specified directory
+    func createFile(named name: String, in directory: URL, with content: Data?) {
+        let filePath = directory.appendingPathComponent(name)
+        if !fileManager.fileExists(atPath: filePath.path) {
+            fileManager.createFile(atPath: filePath.path, contents: content, attributes: nil)
+            print("File \(name) created.")
+        } else {
+            print("File \(name) already exists.")
+        }
+    }
+
 
     // Delete an item at a specified URL
     func deleteItem(at url: URL) {
@@ -94,6 +107,16 @@ class FileAndFolderManager {
             print("Failed to copy item: \(error)")
         }
     }
+    
+    func renameItem(at url: URL, newName: String) {
+            let newPath = url.deletingLastPathComponent().appendingPathComponent(newName)
+            do {
+                try fileManager.moveItem(at: url, to: newPath)
+                print("Item renamed from \(url) to \(newPath)")
+            } catch {
+                print("Failed to rename item: \(error)")
+            }
+        }
 }
 
 // Example usage

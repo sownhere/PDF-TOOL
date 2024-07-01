@@ -11,6 +11,10 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="CameraActionSheet" customModule="FileManager" customModuleProvider="target">
             <connections>
                 <outlet property="cameraBtn" destination="m4U-hX-5ar" id="PGU-cm-6zp"/>
+                <outlet property="exitBtn" destination="Nje-gq-EWR" id="Pkb-av-9m4"/>
+                <outlet property="importFilesBtn" destination="5NJ-FY-baS" id="cPa-Ly-tZq"/>
+                <outlet property="photosBtn" destination="ISu-nZ-utL" id="J5Q-ix-tdD"/>
+                <outlet property="view" destination="q8w-tb-rmx" id="aSP-uE-hIl"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>

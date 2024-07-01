@@ -98,7 +98,7 @@ class HomeViewModel {
                 return currentFolder.files.count
             }
         }
-
+        
     }
     
     
@@ -134,13 +134,62 @@ class HomeViewModel {
     
     // MARK: - Define new HomeViewModel
     
+    func cutSelectedItems() {
+        ToolbarStateManager.shared.cutSelectedItems()
+        reloadUI?()
+    }
     
+    func pasteCutItems() {
+        guard let currentFolderURL = currentFolder?.url else { return }
+        ToolbarStateManager.shared.pasteCutItems(to: currentFolderURL) {
+            self.reloadCurrentFolder()
+            self.reloadUI?()
+        }
+    }
+    
+    func pasteCopyItems() {
+        guard let currentFolderURL = currentFolder?.url else { return }
+        ToolbarStateManager.shared.pasteCopyItems(to: currentFolderURL) {
+            self.reloadCurrentFolder()
+            self.reloadUI?()
+        }
+    }
+    
+    func copySelectedItems() {
+        guard let currentFolderURL = currentFolder?.url else { return }
+        ToolbarStateManager.shared.copySelectedItems(to: currentFolderURL) {
+            self.reloadCurrentFolder()
+            self.reloadUI?()
+        }
+    }
+    
+    func deleteSelectedItems() {
+        ToolbarStateManager.shared.deleteSelectedItems {
+            self.reloadCurrentFolder()
+            self.reloadUI?()
+        }
+    }
+    
+    func renameItem(at url: URL, to newName: String) {
+        ToolbarStateManager.shared.renameItem(at: url, to: newName) {
+            self.reloadCurrentFolder()
+            self.reloadUI?()
+        }
+    }
     
     func createFolder(named name: String) {
         guard let currentFolder = currentFolder else { return }
         fileAndFolderManager.createFolder(named: name, in: currentFolder.url!)
         reloadCurrentFolder()
         reloadUI?()
+    }
+    
+    func createFile(named name: String, content: Data) {
+        guard let currentFolder = currentFolder else {
+            return
+        }
+        
+        fileAndFolderManager.createFile(named: name, in: currentFolder.url!, with: content)
     }
     
     func deleteItem(at url: URL) {
