@@ -6,6 +6,9 @@
 //
 
 import UIKit
+import UniformTypeIdentifiers
+
+import PhotosUI
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, HeaderCollectionViewDelegate {
     
@@ -67,6 +70,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         showSortOptions()
     }
     
+    
+    
     func showSortOptions() {
         let actionSheet = UIAlertController(title: nil, message: "Sort By", preferredStyle: .actionSheet)
         
@@ -93,6 +98,8 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         present(actionSheet, animated: true)
     }
     
+    
+    
     private func updateSortPreference(_ newPreference: UserDefaultsManager.SortOrder) {
         UserDefaultsManager.shared.sortPreference = newPreference
         viewModel.sortItems()
@@ -100,9 +107,14 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     
+    
     func showCameraActionSheet() {
         let cameraActionSheet = CameraActionSheet(nibName: "CameraActionSheet", bundle: nil)
-        cameraActionSheet.viewModel = self.viewModel
+        
+        cameraActionSheet.delegate = self
+        
+        
+        
         let nav = UINavigationController(rootViewController: cameraActionSheet)
         
         nav.modalPresentationStyle = .pageSheet
@@ -145,13 +157,19 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     @IBOutlet var collectionView: UICollectionView!
     @IBOutlet var searchBarView: UISearchBar!
     
+    
+    // MARK: - ViewWillAppear
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        setupCollectionView()
         self.viewModel.reloadCurrentFolder()
         print(self.viewModel.rootFolder?.name! ?? "Khong in ra được tên root folder")
         print(self.viewModel.currentFolder?.name! ?? "Khong in ra ten cua thu muc hien tai duoc")
     }
     
+    
+    //MARK: - ViewWillDidLoad
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = viewModel.currentFolder?.url?.lastPathComponent ?? "My Files"
@@ -164,16 +182,13 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             self?.collectionView.reloadData()
             self?.updateBackgroundImageViewVisibility()
         }
-        self.updateBackgroundImageViewVisibility()
-        
-        //        let searchController = UISearchController(searchResultsController: nil)
-        //        navigationItem.searchController = searchController
-        //        navigationItem.searchController?.searchBar.delegate = self
+        updateBackgroundImageViewVisibility()
         setupSearchController()
         setupEditingBarButton()
         setupCustomToolbar()
         
     }
+    
     
     func setupEditingBarButton() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Edit", style: .plain, target: self, action: #selector(toggleEditingMode))
@@ -187,6 +202,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     }
     
     
+    
     func updateUIForEditingMode() {
         navigationItem.rightBarButtonItem?.title = isEditingMode ? "Done" : "Edit"
         collectionView.reloadData()  // Reload to update cell configuration based on editing mode
@@ -195,21 +211,27 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         self.tabBarController?.tabBar.isHidden = isEditingMode
     }
     
+    
+    
+    
     // MARK: - CollectionView Delegate
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         
         return viewModel.numberOfSections
         
-        
     }
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return viewModel.numberOfItemsInSection(section)
-        
-        
+
     }
+    
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if isGrid {
@@ -229,6 +251,10 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         }
     }
     
+    
+    
+    
+    
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         guard kind == UICollectionView.elementKindSectionHeader else {
             return UICollectionReusableView()
@@ -245,6 +271,10 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         
         return headerView
     }
+    
+    
+    
+    
     
     private func configureHeaderView(_ headerView: HeaderCollectionView, at indexPath: IndexPath) {
         // Determine if it's a folder-only or file-only section when there's exactly one section
@@ -359,7 +389,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
         }
         
         let newViewModel = HomeViewModel()
-        newViewModel.navigateToFolder(folder)
+        newViewModel.navigateToFolder(folder,viewModel.currentFolder!)
         homeViewController.viewModel = newViewModel
         
         if let navigationController = self.navigationController {
@@ -614,3 +644,178 @@ extension HomeViewController {
     }
 }
 
+extension HomeViewController: CameraActionSheetDelegate, UIDocumentPickerDelegate {
+    func didTapedImportFile() {
+        dismiss(animated: true)
+        let documentTypes: [String] = [UTType.content.identifier, UTType.data.identifier, UTType.fileURL.identifier]
+        let documentPicker = UIDocumentPickerViewController(forOpeningContentTypes: documentTypes.map { UTType($0)! }, asCopy: true)
+        documentPicker.delegate = self
+        documentPicker.modalPresentationStyle = .fullScreen
+        present(documentPicker, animated: true, completion: nil)
+        
+    }
+    
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let pickedFileURL = urls.first else {
+                print("No file selected.")
+                
+                return
+            
+            }
+
+            do {
+                // Read the content of the selected file
+                let fileContent = try Data(contentsOf: pickedFileURL)
+                
+                // Get the directory where you want to save the copy
+                
+                    // Extract the file name from the picked file URL
+                    let fileName = pickedFileURL.lastPathComponent
+                    
+                    // Use the createFile method to create a copy of the file in the desired directory
+                    viewModel.createFile(named: fileName, content: fileContent)
+                    viewModel.reloadCurrentFolder()
+                    print("Đã chọn file: \(fileName)")
+                    
+               
+            } catch {
+                print("Error reading file content: \(error)")
+            }
+    }
+    
+    func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        print("Người dùng đã hủy chọn file")
+        
+    }
+    
+    func didTapedPhoto() {
+        dismiss(animated: true)
+//        let imagePicker = UIImagePickerController()
+//        imagePicker.delegate = self
+//        imagePicker.sourceType = .photoLibrary
+//        present(imagePicker, animated: true)
+        presentPhotoPicker()
+    }
+    
+    func didTapedCamera() {
+        
+        dismiss(animated: true)
+        let scannerViewController = ImageScannerController()
+        scannerViewController.modalPresentationStyle = .fullScreen
+        if #available(iOS 13.0, *) {
+            scannerViewController.navigationBar.tintColor = .label
+        } else {
+            scannerViewController.navigationBar.tintColor = .black
+        }
+        scannerViewController.imageScannerDelegate = self
+//        scannerViewController.navigationBar.barTintColor = .black
+        present(scannerViewController, animated: true)
+    }
+    
+    
+    
+}
+
+extension HomeViewController: ImageScannerControllerDelegate {
+    func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
+        // You are responsible for carefully handling the error
+        print(error)
+    }
+
+    func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+        // The user successfully scanned an image, which is available in the ImageScannerResults
+        // You are responsible for dismissing the ImageScannerController
+        scanner.dismiss(animated: true)
+    }
+
+    func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
+        // The user tapped 'Cancel' on the scanner
+        // You are responsible for dismissing the ImageScannerController
+        scanner.dismiss(animated: true)
+    }
+    
+}
+
+extension HomeViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true)
+    }
+
+    func imagePickerController(_ picker: UIImagePickerController,
+                               didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
+        picker.dismiss(animated: true)
+
+        guard let image = info[.originalImage] as? UIImage else { return }
+        let scannerViewController = ImageScannerController(image: image, delegate: self)
+        present(scannerViewController, animated: true)
+    }
+}
+
+extension HomeViewController: PHPickerViewControllerDelegate {
+    func presentPhotoPicker() {
+        var configuration = PHPickerConfiguration(photoLibrary: .shared())
+        configuration.selectionLimit = 0 // 0 means no limit
+        configuration.filter = .images // Only images
+
+        let picker = PHPickerViewController(configuration: configuration)
+        picker.delegate = self
+        present(picker, animated: true, completion: nil)
+    }
+
+    func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
+        picker.dismiss(animated: true, completion: nil)
+
+        let dispatchGroup = DispatchGroup()
+        var selectedImages: [UIImage] = []
+        var quads: [Quadrilateral] = []
+
+        for result in results {
+            dispatchGroup.enter()
+            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
+                if let image = object as? UIImage {
+                    selectedImages.append(image)
+                    self!.detect(image: image) {
+                        detectedQuad in
+                        guard let detectedQuad else {
+                            return
+                        }
+                        quads.append(detectedQuad)
+                    }
+                }
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            // Handle the selected images here
+            
+            let scannerViewController = EditImageScannerViewController(images: selectedImages, quads: quads, image: selectedImages.first!, quad: quads.first)
+                self.present(scannerViewController, animated: true)
+            
+        }
+    }
+}
+
+extension HomeViewController {
+    private func detect(image: UIImage, completion: @escaping (Quadrilateral?) -> Void) {
+        // Whether or not we detect a quad, present the edit view controller after attempting to detect a quad.
+        // *** Vision *requires* a completion block to detect rectangles, but it's instant.
+        // *** When using Vision, we'll present the normal edit view controller first, then present the updated edit view controller later.
+
+        guard let ciImage = CIImage(image: image) else { return }
+        let orientation = CGImagePropertyOrientation(image.imageOrientation)
+        let orientedImage = ciImage.oriented(forExifOrientation: Int32(orientation.rawValue))
+
+        if #available(iOS 11.0, *) {
+            // Use the VisionRectangleDetector on iOS 11 to attempt to find a rectangle from the initial image.
+            VisionRectangleDetector.rectangle(forImage: ciImage, orientation: orientation) { quad in
+                let detectedQuad = quad?.toCartesian(withHeight: orientedImage.extent.height)
+                completion(detectedQuad)
+            }
+        } else {
+            // Use the CIRectangleDetector on iOS 10 to attempt to find a rectangle from the initial image.
+            let detectedQuad = CIRectangleDetector.rectangle(forImage: ciImage)?.toCartesian(withHeight: orientedImage.extent.height)
+            completion(detectedQuad)
+        }
+    }
+}
