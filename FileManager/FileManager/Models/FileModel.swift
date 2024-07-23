@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import PDFKit
 
 struct FileModel {
     var url: URL?
@@ -39,30 +40,47 @@ struct FileModel {
         }
     }
     
-    
     static func configurePDFView(url: URL) -> UIImage? {
-        guard let document = CGPDFDocument(url as CFURL), let page = document.page(at: 1) else {
+        guard let pdfDocument = PDFDocument(url: url) else {
+            print("Failed to create PDFDocument from URL")
             return nil
         }
         
-        let pageRect = page.getBoxRect(.mediaBox)
-        UIGraphicsBeginImageContext(pageRect.size)
-        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        guard let pdfPage = pdfDocument.page(at: 0) else {
+            print("Failed to get first page of PDF")
+            return nil
+        }
         
-        // White background
-        context.setFillColor(UIColor.white.cgColor)
-        context.fill(pageRect)
+        let pageRect = pdfPage.bounds(for: .mediaBox)
+        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
         
-        // Render the PDF page into the context
-        context.translateBy(x: 0.0, y: pageRect.size.height)
-        context.scaleBy(x: 1.0, y: -1.0)
-        context.drawPDFPage(page)
+        let img = renderer.image { ctx in
+            UIColor.white.set()
+            ctx.fill(pageRect)
+            
+            ctx.cgContext.translateBy(x: 0.0, y: pageRect.size.height)
+            ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
+            
+            pdfPage.draw(with: .mediaBox, to: ctx.cgContext)
+        }
         
-        let image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        return image
+        return img
     }
     
-    
+    static func debugPDFStructure(url: URL) {
+        guard let pdfDocument = PDFDocument(url: url) else {
+            print("Failed to create PDFDocument from URL")
+            return
+        }
+        
+        print("PDF Document Info:")
+        print("Number of pages: \(pdfDocument.pageCount)")
+        
+        for i in 0..<pdfDocument.pageCount {
+            guard let page = pdfDocument.page(at: i) else { continue }
+            print("Page \(i + 1):")
+            print("  Bounds: \(page.bounds(for: .mediaBox))")
+            print("  Rotation: \(page.rotation)")
+        }
+    }
 }

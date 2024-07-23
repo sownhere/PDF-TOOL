@@ -1,24 +1,21 @@
 //
 //  ScannedPageViewController.swift
-//  FileManager
+//  WeScan
 //
-//  Created by Macbook on 10/07/2024.
+//  Created by Enrique Rodriguez on 07/01/2019.
+//  Copyright © 2019 WeTransfer. All rights reserved.
 //
-
 
 import UIKit
 
 class ScannedPageViewController: UIViewController {
 
-
-    var imageScannerResult: ImageScannerResults
+    private var scannedItem:ScannedItem
     private var renderedImageView:UIImageView!
     private var activityIndicator:UIActivityIndicatorView!
     
-
-    
-    init(imageScannerResult: ImageScannerResults){
-        self.imageScannerResult = imageScannerResult
+    init(scannedItem:ScannedItem){
+        self.scannedItem = scannedItem
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -30,7 +27,7 @@ class ScannedPageViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.setUpViews()
+        self.setupViews()
     }
         
     override func viewWillAppear(_ animated: Bool) {
@@ -44,9 +41,8 @@ class ScannedPageViewController: UIViewController {
     }
 
     // MARK: - Private methods
-
-    private func setUpViews(){
-        self.view.backgroundColor = .white
+    
+    private func setupViews(){
         // Image View
         self.renderedImageView = UIImageView(image: nil)
         self.renderedImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -68,28 +64,31 @@ class ScannedPageViewController: UIViewController {
                                             self.activityIndicator.centerYAnchor.constraint(equalTo: self.view.centerYAnchor)]
         self.view.addSubview(activityIndicator)
         NSLayoutConstraint.activate(activityIndicatorConstraints)
-        
     }
-
-    // MARK: - Public methods
-
-    public func render() {
-        if self.renderedImageView.image == nil {
-            self.activityIndicator.isHidden = false
-            self.activityIndicator.startAnimating()
-            
-            self.renderedImageView.image = self.imageScannerResult.croppedScan.image
-            self.activityIndicator.stopAnimating()
-            
-        }
-    } 
     
     // MARK: - Public methods
     
-    public func reRender(item:ImageScannerResults){
+    public func reRender(item:ScannedItem){
         self.renderedImageView.image = nil
-        self.imageScannerResult = item
+        self.scannedItem.renderedImage = nil
+        self.scannedItem = item
         self.render()
     }
-
+    
+    public func render(){
+        if (self.renderedImageView.image == nil){
+            if self.scannedItem.renderedImage != nil{
+                self.renderedImageView.image = self.scannedItem.renderedImage?.retrieveImage()
+                self.activityIndicator.stopAnimating()
+            } else {
+                self.activityIndicator.isHidden = false
+                self.activityIndicator.startAnimating()
+                
+                scannedItem.render { (image) in
+                    self.renderedImageView.image = image?.retrieveImage()
+                    self.activityIndicator.stopAnimating()
+                }
+            }
+        }
+    }
 }

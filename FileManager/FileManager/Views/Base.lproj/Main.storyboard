@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="UOS-tw-sqj">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -122,7 +123,7 @@
                                 </collectionReusableView>
                             </collectionView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="CTv-89-gSd">
-                                <rect key="frame" x="327.33333333333331" y="729" width="49.666666666666686" height="40"/>
+                                <rect key="frame" x="327" y="714" width="50" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="0KZ-j6-oTs"/>
                                 </constraints>
@@ -130,7 +131,7 @@
                                 <buttonConfiguration key="configuration" style="filled" image="camera.circle.fill" catalog="system"/>
                                 <userDefinedRuntimeAttributes>
                                     <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                        <integer key="value" value="20"/>
+                                        <integer key="value" value="40"/>
                                     </userDefinedRuntimeAttribute>
                                 </userDefinedRuntimeAttributes>
                             </button>
@@ -139,7 +140,13 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="Vgj-MG-HrX" firstAttribute="top" secondItem="STT-ev-40G" secondAttribute="top" id="EyD-GA-i69"/>
-                            <constraint firstItem="CTv-89-gSd" firstAttribute="bottom" secondItem="STT-ev-40G" secondAttribute="bottom" id="IfT-BD-jUD"/>
+                            <constraint firstItem="CTv-89-gSd" firstAttribute="bottom" secondItem="STT-ev-40G" secondAttribute="bottom" constant="-15" id="IfT-BD-jUD">
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                                        <integer key="value" value="20"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
+                            </constraint>
                             <constraint firstItem="STT-ev-40G" firstAttribute="trailing" secondItem="CTv-89-gSd" secondAttribute="trailing" constant="16" id="UbL-Yo-M0V"/>
                             <constraint firstItem="Vgj-MG-HrX" firstAttribute="bottom" secondItem="STT-ev-40G" secondAttribute="bottom" id="Uk8-Yj-c57"/>
                             <constraint firstItem="Vgj-MG-HrX" firstAttribute="leading" secondItem="STT-ev-40G" secondAttribute="leading" id="nNp-1q-Fc7"/>
@@ -242,10 +249,10 @@
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
         <systemColor name="systemPinkColor">
-            <color red="1" green="0.1764705882" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemRedColor">
-            <color red="1" green="0.23137254900000001" blue="0.18823529410000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

@@ -1,35 +1,21 @@
 //
-//  MultiPageScanViewController.swift
-//  FileManager
+//  MultiPageScanSessionViewController.swift
+//  WeScan
 //
-//  Created by Macbook on 10/07/2024.
+//  Created by Enrique Rodriguez on 07/01/2019.
+//  Copyright © 2019 WeTransfer. All rights reserved.
 //
-
 
 import UIKit
 
 public protocol MultiPageScanSessionViewControllerDelegate:NSObjectProtocol {
-    func multiPageScanSessionViewController(_ multiPageScanSessionViewController:MultiPageScanSessionViewController, finished session:MultiPageScanSessionViewModel)
+    func multiPageScanSessionViewController(_ multiPageScanSessionViewController:MultiPageScanSessionViewController, finished session:MultiPageScanSession)
 }
 
 public class MultiPageScanSessionViewController: UIViewController {
 
-    private var scanSession:MultiPageScanSessionViewModel
+    private var scanSession:MultiPageScanSession
     private var pages:Array<ScannedPageViewController> = []
-    
-
-
-    private lazy var cancelButton: UIBarButtonItem = {
-        let title = NSLocalizedString("wescan.scanning.cancel",
-                                      tableName: nil,
-                                      bundle: Bundle(for: EditScanViewController.self),
-                                      value: "Cancel",
-                                      comment: "A generic cancel button"
-        )
-        let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(cancelButtonTapped))
-        button.tintColor = .red
-        return button
-    }()
     
     weak public var delegate:MultiPageScanSessionViewControllerDelegate?
     
@@ -53,7 +39,7 @@ public class MultiPageScanSessionViewController: UIViewController {
         return pageControl
     }()
     
-    public init(scanSession:MultiPageScanSessionViewModel){
+    public init(scanSession:MultiPageScanSession){
         self.scanSession = scanSession
         super.init(nibName: nil, bundle: nil)
         setupPages()
@@ -67,45 +53,22 @@ public class MultiPageScanSessionViewController: UIViewController {
     
     override public func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
-        if let firstVC = self.navigationController?.viewControllers.first, firstVC == self {
-            navigationItem.leftBarButtonItem = cancelButton
-            self.navigationController?.navigationBar.tintColor = UIColor.red
-
-        } else {
-            self.navigationController?.navigationBar.tintColor = UIColor.red
-
-
-            
-        }
-
+        self.view.backgroundColor = UIColor.black
         self.setupViews()
     }
     
-//    override public func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        self.navigationController?.setNavigationBarHidden(false, animated: true)
-//        self.navigationController?.setToolbarHidden(false, animated: true)
-//        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-//        self.navigationController?.navigationBar.backgroundColor = .white
-//        self.navigationController?.toolbar.backgroundColor = .white
-//        self.reloadCurrentPage()
-//        
-//    }
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+        self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationController?.setToolbarHidden(false, animated: true)
         navigationController?.interactivePopGestureRecognizer?.isEnabled = false
     }
-
-
     
     // MARK: - Private
     
     private func setupPages(){
-        self.scanSession.imageScannerResults.forEach { (imageScannerResult) in
-            let vc = ScannedPageViewController(imageScannerResult: imageScannerResult)
+        self.scanSession.scannedItems.forEach { (scannedItem) in
+            let vc = ScannedPageViewController(scannedItem: scannedItem)
             vc.view.isUserInteractionEnabled = false
             self.pages.append(vc)
         }
@@ -129,11 +92,11 @@ public class MultiPageScanSessionViewController: UIViewController {
         NSLayoutConstraint.activate(pageControlConstraints)
         
         // Navigation
-//        self.navigationController?.navigationBar.isTranslucent = false
+        self.navigationController?.navigationBar.isTranslucent = false
         self.navigationItem.rightBarButtonItem = self.saveButton
         
         // Toolbar
-//        self.navigationController?.toolbar.isTranslucent = false
+        self.navigationController?.toolbar.isTranslucent = false
         let editItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(handleEdit))
         let deleteItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(handleTrash))
         let rotateIconImage = UIImage(named: "rotate", in: Bundle(for: MultiPageScanSessionViewController.self), compatibleWith: nil)
@@ -153,9 +116,9 @@ public class MultiPageScanSessionViewController: UIViewController {
         return self.pages.firstIndex(of:currentViewController)
     }
     
-    private func getCurrentItem()->ImageScannerResults?{
+    private func getCurrentItem()->ScannedItem?{
         if let currentIndex = self.getCurrentPageIndex(){
-            return self.scanSession.imageScannerResults[currentIndex]
+            return self.scanSession.scannedItems[currentIndex]
         }
         return nil
     }
@@ -180,7 +143,7 @@ public class MultiPageScanSessionViewController: UIViewController {
         if let currentIndex = self.getCurrentPageIndex(){
             self.scanSession.remove(index: currentIndex)
             self.pages.remove(at: currentIndex)
-            if (self.scanSession.imageScannerResults.count > 0){
+            if (self.scanSession.scannedItems.count > 0){
                 let previousIndex  = currentIndex - 1
                 let newIndex = (previousIndex >= 0 ? previousIndex : 0)
                 let direction:UIPageViewController.NavigationDirection = (newIndex == 0 ? .forward : .reverse)
@@ -193,23 +156,15 @@ public class MultiPageScanSessionViewController: UIViewController {
     
     // MARK: Button handlers
     
-    @objc func cancelButtonTapped() {
-        if let imageScannerController = navigationController as? ImageScannerController {
-            imageScannerController.imageScannerDelegate?.imageScannerControllerDidCancel(imageScannerController)
-        }
-    }
-
-    
     @objc private func handleSave(){
         self.delegate?.multiPageScanSessionViewController(self, finished: self.scanSession)
     }
     
     @objc private func handleRotate(){
-//        if let currentItem = self.getCurrentItem(){
-//            currentItem.rotation -= 90.0
-//            self.getCurrentViewController().reRender(item: currentItem)
-//        }
-        print("xu ly xoay anh o day")
+        if let currentItem = self.getCurrentItem(){
+            currentItem.rotation -= 90.0
+            self.getCurrentViewController().reRender(item: currentItem)
+        }
     }
     
     @objc private func handleTrash(){
@@ -226,61 +181,31 @@ public class MultiPageScanSessionViewController: UIViewController {
         self.present(alertController, animated: true, completion: nil)
     }
     
-//    @objc private func handleEdit(){
-//        if let currentIndex = self.getCurrentPageIndex(){
-//            let currentItem = self.scanSession.imageScannerResults[currentIndex]
-//            
-//            let editViewController = EditScanViewController(imagecannerResult: currentItem, rotateImage: false)
-//            editViewController.delegate = self
-//            editViewController.modalPresentationStyle = .fullScreen
-//            let navController = UINavigationController(rootViewController: editViewController)
-//            self.present(navController, animated: true, completion: nil)
-//        } else {
-//            fatalError("Current viewcontroller cannot be found")
-//        }
-//    }
-    
     @objc private func handleEdit(){
         if let currentIndex = self.getCurrentPageIndex(){
-            let currentItem = self.scanSession.imageScannerResults[currentIndex]
+            let currentItem = self.scanSession.scannedItems[currentIndex]
             
-            let editViewController = EditScanViewController(imagecannerResult: currentItem, rotateImage: false)
+            let editViewController = EditScanViewController(scannedItem: currentItem)
             editViewController.delegate = self
-            editViewController.modalPresentationStyle = .fullScreen
             let navController = UINavigationController(rootViewController: editViewController)
             self.present(navController, animated: true, completion: nil)
         } else {
             fatalError("Current viewcontroller cannot be found")
         }
     }
-    
 }
 
-extension MultiPageScanSessionViewController: EditScanViewControllerDelegate {
+extension MultiPageScanSessionViewController:EditScanViewControllerDelegate {
+
     func editScanViewControllerDidCancel(_ editScanViewController: EditScanViewController) {
         self.dismiss(animated: true, completion: nil)
     }
     
-    func editScanViewController(_ editScanViewController: EditScanViewController, finishedEditing item: ImageScannerResults) {
-        self.dismiss(animated: true, completion: {
-            if let index = self.getCurrentPageIndex() {
-                
-                self.scanSession.updateImageScannerResult(at: index, with: item)
-                self.reloadCurrentPage()
-            }
-        })
+    func editScanViewController(_ editScanViewController: EditScanViewController, finishedEditing item: ScannedItem) {
+        self.dismiss(animated: true, completion: nil)
+        let currentViewController = self.getCurrentViewController()
+        currentViewController.reRender(item: item)
     }
-    
-    private func reloadCurrentPage() {
-        DispatchQueue.main.async { // Đảm bảo mọi thay đổi giao diện đều trên main thread
-            if let currentPageIndex = self.getCurrentPageIndex() {
-                let currentViewController = self.pages[currentPageIndex] as ScannedPageViewController
-                currentViewController.reRender(item: self.scanSession.imageScannerResults[currentPageIndex])
-            }
-        }
-    }
-    
-
 }
 
 extension MultiPageScanSessionViewController:UIPageViewControllerDataSource{
@@ -305,19 +230,6 @@ extension MultiPageScanSessionViewController:UIPageViewControllerDataSource{
         return nil
     }
     
-//    private func reloadCurrentPage() {
-//        DispatchQueue.main.async { // Đảm bảo mọi thay đổi giao diện đều trên main thread
-//            if let currentPageIndex = self.getCurrentPageIndex() {
-//                let currentViewController = self.pages[currentPageIndex] as ScannedPageViewController
-// 
-//                currentViewController.reRender(item: currentViewController.imageScannerResult)
-//                
-//            }
-//        }
-//    }
-
-
-    
 }
 
 extension MultiPageScanSessionViewController:UIPageViewControllerDelegate{
@@ -337,4 +249,3 @@ extension MultiPageScanSessionViewController:UIPageViewControllerDelegate{
     
     
 }
-

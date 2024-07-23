@@ -18,9 +18,9 @@ final class ZoomGestureController {
     private var closestCorner: CornerPosition?
 
     init(image: UIImage, quadView: QuadrilateralView) {
-        self.image = image
-        self.quadView = quadView
-    }
+            self.image = image.forceSameOrientation()
+            self.quadView = quadView
+        }
 
     @objc func handle(pan: UIGestureRecognizer) {
         guard let drawnQuad = quadView.quad else {
@@ -61,4 +61,18 @@ final class ZoomGestureController {
         quadView.highlightCornerAtPosition(position: closestCorner, with: zoomedImage)
     }
 
+}
+
+extension UIImage {
+    
+    func forceSameOrientation() -> UIImage {
+        UIGraphicsBeginImageContext(self.size)
+        self.draw(in: CGRect(origin: CGPoint.zero, size: self.size))
+        guard let image = UIGraphicsGetImageFromCurrentImageContext() else {
+            UIGraphicsEndImageContext()
+            return self
+        }
+        UIGraphicsEndImageContext()
+        return image
+    }
 }

@@ -54,6 +54,7 @@ class MoreButtonActionSheetViewController: UIViewController {
     @objc private func shareItem() {
         guard let url = itemURL else { return }
         let activityViewController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        activityViewController.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
         activityViewController.popoverPresentationController?.sourceView = self.view // For iPad support
         self.present(activityViewController, animated: true, completion: nil)
 

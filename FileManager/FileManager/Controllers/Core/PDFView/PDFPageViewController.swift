@@ -9,6 +9,8 @@ import UIKit
 
 class PDFPageViewController: UIViewController {
 
+    lazy var pdfView: UIView = UIView()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

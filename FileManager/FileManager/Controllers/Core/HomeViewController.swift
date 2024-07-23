@@ -7,7 +7,7 @@
 
 import UIKit
 import UniformTypeIdentifiers
-
+import PDFKit
 import PhotosUI
 
 class HomeViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDataSource, HeaderCollectionViewDelegate {
@@ -374,12 +374,29 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
             switch item {
             case .folder(let folder):
                 showNewHomeView(with: folder)
-            case .file(_):
-                // Handle file selection, if needed
-                break
+            case .file(let file):
+                /// open file pdf and convert to image
+
+                guard let fileUrl = file.url else {
+                    print("No file URL found")
+                    break
+                }
+                let viewPDPViewController = ViewPDFViewController(fileURL: fileUrl)
+                
+                if let navigationController = self.navigationController {
+                    navigationController.pushViewController(viewPDPViewController, animated: true)
+                    navigationController.tabBarController?.tabBar.isHidden = true
+                    navigationController.navigationBar.backgroundColor = .white
+                    navigationController.tabBarController?.tabBar.backgroundColor = .white
+                } else {
+                    print("NavigationController is nil")
+                }
             }
         }
     }
+    
+
+
     
     // MARK: - Define any view set up
     
@@ -642,6 +659,8 @@ extension HomeViewController {
         
         present(alertController, animated: true, completion: nil)
     }
+    // them mot phan de nguoi dung nhap ten file de lưu file
+
 }
 
 extension HomeViewController: CameraActionSheetDelegate, UIDocumentPickerDelegate {
@@ -702,11 +721,6 @@ extension HomeViewController: CameraActionSheetDelegate, UIDocumentPickerDelegat
         dismiss(animated: true)
         let scannerViewController = ImageScannerController()
         scannerViewController.modalPresentationStyle = .fullScreen
-        if #available(iOS 13.0, *) {
-            scannerViewController.navigationBar.tintColor = .label
-        } else {
-            scannerViewController.navigationBar.tintColor = .black
-        }
         scannerViewController.imageScannerDelegate = self
 //        scannerViewController.navigationBar.barTintColor = .black
         present(scannerViewController, animated: true)
@@ -722,10 +736,12 @@ extension HomeViewController: ImageScannerControllerDelegate {
         print(error)
     }
 
-    func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
+    func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults session: MultiPageScanSessionViewModel) {
         // The user successfully scanned an image, which is available in the ImageScannerResults
-        // You are responsible for dismissing the ImageScannerController
         scanner.dismiss(animated: true)
+        // You are responsible for dismissing the ImageScannerController
+        handleResult(session: session)
+        
     }
 
     func imageScannerControllerDidCancel(_ scanner: ImageScannerController) {
@@ -745,8 +761,8 @@ extension HomeViewController: UIImagePickerControllerDelegate, UINavigationContr
                                didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         picker.dismiss(animated: true)
 
-        guard let image = info[.originalImage] as? UIImage else { return }
-        let scannerViewController = ImageScannerController(image: image, delegate: self)
+        guard info[.originalImage] is UIImage else { return }
+        let scannerViewController = ImageScannerController( delegate: self)
         present(scannerViewController, animated: true)
     }
 }
@@ -765,57 +781,167 @@ extension HomeViewController: PHPickerViewControllerDelegate {
     func picker(_ picker: PHPickerViewController, didFinishPicking results: [PHPickerResult]) {
         picker.dismiss(animated: true, completion: nil)
 
-        let dispatchGroup = DispatchGroup()
-        var selectedImages: [UIImage] = []
-        var quads: [Quadrilateral] = []
+        // Nếu không có ảnh nào được chọn (người dùng nhấn cancel), chúng ta sẽ không làm gì cả
+        guard !results.isEmpty else { return }
 
+        let dispatchGroup = DispatchGroup()
+        var images: [UIImage] = []
         for result in results {
             dispatchGroup.enter()
-            result.itemProvider.loadObject(ofClass: UIImage.self) { [weak self] (object, error) in
+            result.itemProvider.loadObject(ofClass: UIImage.self) { (object, error) in
                 if let image = object as? UIImage {
-                    selectedImages.append(image)
-                    self!.detect(image: image) {
-                        detectedQuad in
-                        guard let detectedQuad else {
-                            return
-                        }
-                        quads.append(detectedQuad)
-                    }
+                    images.append(image)
+                } else {
+                    print(error as Any)
                 }
                 dispatchGroup.leave()
             }
         }
 
         dispatchGroup.notify(queue: .main) {
-            // Handle the selected images here
-            
-            let scannerViewController = EditImageScannerViewController(images: selectedImages, quads: quads, image: selectedImages.first!, quad: quads.first)
-                self.present(scannerViewController, animated: true)
-            
+            // Chỉ xử lý các ảnh đã chọn nếu có ít nhất một ảnh
+            let scannerViewController = ImageScannerController(delegate: self, images: images)
+            scannerViewController.modalPresentationStyle = .fullScreen
+            scannerViewController.imageScannerDelegate = self
+            self.present(scannerViewController, animated: true)
         }
     }
 }
+
+
+
+extension HomeViewController:MultiPageScanSessionViewControllerDelegate{
+    
+    func multiPageScanSessionViewController(_ multiPageScanSessionViewController: MultiPageScanSessionViewController, finished session: MultiPageScanSessionViewModel) {
+        self.dismiss(animated: true) {
+//            self.handleResult(session: session)
+        }
+    }
+}
+
+
 
 extension HomeViewController {
-    private func detect(image: UIImage, completion: @escaping (Quadrilateral?) -> Void) {
-        // Whether or not we detect a quad, present the edit view controller after attempting to detect a quad.
-        // *** Vision *requires* a completion block to detect rectangles, but it's instant.
-        // *** When using Vision, we'll present the normal edit view controller first, then present the updated edit view controller later.
-
-        guard let ciImage = CIImage(image: image) else { return }
-        let orientation = CGImagePropertyOrientation(image.imageOrientation)
-        let orientedImage = ciImage.oriented(forExifOrientation: Int32(orientation.rawValue))
-
-        if #available(iOS 11.0, *) {
-            // Use the VisionRectangleDetector on iOS 11 to attempt to find a rectangle from the initial image.
-            VisionRectangleDetector.rectangle(forImage: ciImage, orientation: orientation) { quad in
-                let detectedQuad = quad?.toCartesian(withHeight: orientedImage.extent.height)
-                completion(detectedQuad)
-            }
-        } else {
-            // Use the CIRectangleDetector on iOS 10 to attempt to find a rectangle from the initial image.
-            let detectedQuad = CIRectangleDetector.rectangle(forImage: ciImage)?.toCartesian(withHeight: orientedImage.extent.height)
-            completion(detectedQuad)
+    func handleResult(session: MultiPageScanSessionViewModel) {
+        let alertController = UIAlertController(title: "Save PDF", message: "Enter a name for this PDF file.", preferredStyle: .alert)
+        alertController.addTextField { textField in
+            textField.placeholder = "File Name"
         }
+        
+        let saveAction = UIAlertAction(title: "Save", style: .default) { [weak self] _ in
+            guard let self = self,
+                  let textField = alertController.textFields?.first,
+                  let fileName = textField.text,
+                  !fileName.isEmpty else { return }
+            
+            self.savePDF(fileName: fileName, session: session)
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        
+        alertController.addAction(saveAction)
+        alertController.addAction(cancelAction)
+        
+        present(alertController, animated: true, completion: nil)
     }
+    
+//    private func savePDF(fileName: String, session: MultiPageScanSessionViewModel) {
+//        let pdfDocument = PDFDocument()
+//        
+//        for (index, result) in session.imageScannerResults.enumerated() {
+//            if let image = result.croppedScan.image.pdfPage() {
+//                pdfDocument.insert(image, at: index)
+//            }
+//        }
+//        
+//        guard let data = pdfDocument.dataRepresentation() else {
+//            print("Failed to create PDF data")
+//            return
+//        }
+//        
+//        let fileNameWithExtension = fileName.hasSuffix(".pdf") ? fileName : fileName + ".pdf"
+//        viewModel.createFile(named: fileNameWithExtension, content: data)
+//        viewModel.reloadCurrentFolder()
+//        print("PDF saved: \(fileNameWithExtension)")
+//    }
+//    private func savePDF(fileName: String, session: MultiPageScanSessionViewModel) {
+//        let pdfDocument = PDFDocument()
+//        
+//        for (index, result) in session.imageScannerResults.enumerated() {
+//            if let imageData = result.croppedScan.image.pdfData(),
+//               let imagePDFDoc = PDFDocument(data: imageData),
+//               let page = imagePDFDoc.page(at: 0) {
+//                pdfDocument.insert(page, at: index)
+//            }
+//        }
+//
+//        guard let data = pdfDocument.dataRepresentation() else {
+//            print("Failed to create PDF data")
+//            return
+//        }
+//
+//        let fileNameWithExtension = fileName.hasSuffix(".pdf") ? fileName : fileName + ".pdf"
+//        viewModel.createFile(named: fileNameWithExtension, content: data)
+//        viewModel.reloadCurrentFolder()
+//        print("PDF saved: \(fileNameWithExtension)")
+//    }
+    
+    private func savePDF(fileName: String, session: MultiPageScanSessionViewModel) {
+        let pdfDocument = PDFDocument()
+        
+        for (index, result) in session.imageScannerResults.enumerated() {
+            if let imageData = result.croppedScan.image.pdfData() {  // Use the modified method
+                if let imagePDFDoc = PDFDocument(data: imageData),
+                   let page = imagePDFDoc.page(at: 0) {
+                    pdfDocument.insert(page, at: index)
+                }
+            }
+        }
+
+        guard let data = pdfDocument.dataRepresentation() else {
+            print("Failed to create PDF data")
+            return
+        }
+
+        let fileNameWithExtension = fileName.hasSuffix(".pdf") ? fileName : fileName + ".pdf"
+        viewModel.createFile(named: fileNameWithExtension, content: data)
+        viewModel.reloadCurrentFolder()
+        print("PDF saved: \(fileNameWithExtension)")
+    }
+
+
 }
+
+extension UIImage {
+    func pdfPage() -> PDFPage? {
+        let pdfPage = PDFPage()
+        let pageRect = CGRect(origin: .zero, size: self.size)
+        
+        UIGraphicsBeginImageContextWithOptions(self.size, false, 0.0)
+        defer { UIGraphicsEndImageContext() }
+        
+        guard let context = UIGraphicsGetCurrentContext() else { return nil }
+        context.setFillColor(UIColor.white.cgColor)
+        context.fill(pageRect)
+        self.draw(in: pageRect)
+        
+        guard UIGraphicsGetImageFromCurrentImageContext() != nil else { return nil }
+        pdfPage.draw(with: .mediaBox, to: context)
+        
+        return pdfPage
+    }
+    
+//    func pdfData() -> Data? {
+//        let pdfRendererFormat = UIGraphicsPDFRendererFormat()
+//        let pdfRendererBounds = CGRect(origin: .zero, size: self.size)
+//        let pdfRenderer = UIGraphicsPDFRenderer(bounds: pdfRendererBounds, format: pdfRendererFormat)
+//
+//        let pdfData = pdfRenderer.pdfData { (context) in
+//            context.beginPage()
+//            self.draw(in: pdfRendererBounds)
+//        }
+//        return pdfData
+//    }
+    
+}
+

@@ -9,6 +9,12 @@
 import AVFoundation
 import UIKit
 
+
+protocol EditScanViewControllerDelegate: AnyObject {
+    func editScanViewControllerDidCancel(_ editScanViewController:EditScanViewController)
+    func editScanViewController(_ editScanViewController:EditScanViewController, finishedEditing item:ImageScannerResults)
+}
+
 /// The `EditScanViewController` offers an interface for the user to edit the detected quadrilateral.
 final class EditScanViewController: UIViewController {
 
@@ -17,7 +23,7 @@ final class EditScanViewController: UIViewController {
         imageView.clipsToBounds = true
         imageView.isOpaque = true
         imageView.image = image
-        imageView.backgroundColor = .black
+        imageView.backgroundColor = .white
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -38,7 +44,7 @@ final class EditScanViewController: UIViewController {
                                       comment: "A generic next button"
         )
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(pushReviewController))
-        button.tintColor = navigationController?.navigationBar.tintColor
+        button.tintColor = .red
         return button
     }()
 
@@ -50,15 +56,20 @@ final class EditScanViewController: UIViewController {
                                       comment: "A generic cancel button"
         )
         let button = UIBarButtonItem(title: title, style: .plain, target: self, action: #selector(cancelButtonTapped))
-        button.tintColor = navigationController?.navigationBar.tintColor
+        button.tintColor = .red
         return button
     }()
+    
+    var imageScannerResult: ImageScannerResults
 
     /// The image the quadrilateral was detected on.
     private let image: UIImage
 
     /// The detected quadrilateral that can be edited by the user. Uses the image's coordinates.
     private var quad: Quadrilateral
+    
+    /// The object that acts as the delegate of the `EditScanViewController`.
+    weak public var delegate: EditScanViewControllerDelegate?
 
     private var zoomGestureController: ZoomGestureController!
 
@@ -67,9 +78,10 @@ final class EditScanViewController: UIViewController {
 
     // MARK: - Life Cycle
 
-    init(image: UIImage, quad: Quadrilateral?, rotateImage: Bool = true) {
-        self.image = rotateImage ? image.applyingPortraitOrientation() : image
-        self.quad = quad ?? EditScanViewController.defaultQuad(forImage: image)
+    init(imagecannerResult: ImageScannerResults, rotateImage: Bool = true) {
+        self.imageScannerResult = imagecannerResult
+        self.image = (rotateImage ? imagecannerResult.croppedScan.image.applyingPortraitOrientation() : imagecannerResult.originalScan.image)
+        self.quad = imagecannerResult.detectedRectangle 
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -79,7 +91,7 @@ final class EditScanViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-
+        self.view.backgroundColor = .white
         setupViews()
         setupConstraints()
         title = NSLocalizedString("wescan.edit.title",
@@ -146,9 +158,7 @@ final class EditScanViewController: UIViewController {
 
     // MARK: - Actions
     @objc func cancelButtonTapped() {
-        if let imageScannerController = navigationController as? ImageScannerController {
-            imageScannerController.imageScannerDelegate?.imageScannerControllerDidCancel(imageScannerController)
-        }
+        self.dismiss(animated: true)
     }
 
     @objc func pushReviewController() {
@@ -177,19 +187,11 @@ final class EditScanViewController: UIViewController {
         ])
 
         let croppedImage = UIImage.from(ciImage: filteredImage)
-        // Enhanced Image
-        let enhancedImage = filteredImage.applyingAdaptiveThreshold()?.withFixedOrientation()
-        let enhancedScan = enhancedImage.flatMap { ImageScannerScan(image: $0) }
 
-        let results = ImageScannerResults(
-            detectedRectangle: scaledQuad,
-            originalScan: ImageScannerScan(image: image),
-            croppedScan: ImageScannerScan(image: croppedImage),
-            enhancedScan: enhancedScan
-        )
-
-        let reviewViewController = ReviewViewController(results: results)
-        navigationController?.pushViewController(reviewViewController, animated: true)
+        self.imageScannerResult.detectedRectangle = scaledQuad
+        self.imageScannerResult.croppedScan.image = croppedImage
+        self.delegate?.editScanViewController(self, finishedEditing: self.imageScannerResult)
+        self.dismiss(animated: true)
     }
 
     private func displayQuad() {

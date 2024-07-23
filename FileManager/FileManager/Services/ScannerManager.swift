@@ -6,3 +6,17 @@
 //
 
 import Foundation
+import UIKit
+
+
+class ScannerManager {
+    
+    static let share =  ScannerManager()
+    
+    private init() {}
+    
+    var imageScans: [UIImage] = []
+    var quads: [Quadrilateral] = []
+    
+    
+}

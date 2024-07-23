@@ -210,7 +210,8 @@ class HomeViewModel {
         reloadUI?()
     }
     
-    func navigateToFolder(_ folder: FolderModel) {
+    func navigateToFolder(_ folder: FolderModel, _ parentFolder: FolderModel) {
+        rootFolder = parentFolder
         currentFolder = folder
         reloadUI?()
     }
@@ -258,7 +259,34 @@ class HomeViewModel {
             }
         }
     }
+
+    class func imageToPDF(_ image:UIImage) -> Data {
+        let data = NSMutableData()
+            
+        let bounds = CGRect(origin: CGPoint.zero, size: image.size)
+            
+        UIGraphicsBeginPDFContextToData(data, bounds, nil)
+        UIGraphicsBeginPDFPage()
+        image.draw(at: CGPoint.zero)
+        UIGraphicsEndPDFContext()
+            
+        return data as Data
+    }
     
+    // tao mot ham luu scan la mot mang image thanh file pdf vao thu muc hien tai voi ten la saveImageToDocumentDirectory co cac value duoc truyen vao
+    func saveImageToDocumentDirectory(_ image: [UIImage], withName name: String) {
+        let pdfData = NSMutableData()
+        UIGraphicsBeginPDFContextToData(pdfData, CGRect.zero, nil)
+        for img in image {
+            UIGraphicsBeginPDFPage()
+            img.draw(in: CGRect(x: 0, y: 0, width: img.size.width, height: img.size.height))
+        }
+        UIGraphicsEndPDFContext()
+        let pdfPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(name)
+        pdfData.write(to: pdfPath, atomically: true)
+    }
+
+
 }
 
 

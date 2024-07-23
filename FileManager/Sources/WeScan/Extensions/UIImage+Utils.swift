@@ -65,28 +65,60 @@ extension UIImage {
     }
 
     /// Returns the data for the image in the PDF format
-    func pdfData() -> Data? {
-        // Typical Letter PDF page size and margins
-        let pageBounds = CGRect(x: 0, y: 0, width: 595, height: 842)
-        let margin: CGFloat = 40
+//    func pdfData() -> Data? {
+//        // Typical Letter PDF page size and margins
+//        let pageBounds = CGRect(x: 0, y: 0, width: 595, height: 842)
+//        let margin: CGFloat = 40
+//
+//        let imageMaxWidth = pageBounds.width - (margin * 2)
+//        let imageMaxHeight = pageBounds.height - (margin * 2)
+//
+//        let image = scaledImage(scaleFactor: size.scaleFactor(forMaxWidth: imageMaxWidth, maxHeight: imageMaxHeight)) ?? self
+//        let renderer = UIGraphicsPDFRenderer(bounds: pageBounds)
+//
+//        let data = renderer.pdfData { ctx in
+//            ctx.beginPage()
+//
+//            ctx.cgContext.interpolationQuality = .high
+//
+//            image.draw(at: CGPoint(x: margin, y: margin))
+//        }
+//
+//        return data
+//    }
 
-        let imageMaxWidth = pageBounds.width - (margin * 2)
-        let imageMaxHeight = pageBounds.height - (margin * 2)
+    func pdfData(pageSize: CGSize = CGSize(width: 595.2, height: 841.8)) -> Data? {  // A4 size in points (1 point = 1/72 inch)
+            let pdfRendererFormat = UIGraphicsPDFRendererFormat()
+            let pdfRendererBounds = CGRect(origin: .zero, size: pageSize)
+            let pdfRenderer = UIGraphicsPDFRenderer(bounds: pdfRendererBounds, format: pdfRendererFormat)
 
-        let image = scaledImage(scaleFactor: size.scaleFactor(forMaxWidth: imageMaxWidth, maxHeight: imageMaxHeight)) ?? self
-        let renderer = UIGraphicsPDFRenderer(bounds: pageBounds)
-
-        let data = renderer.pdfData { ctx in
-            ctx.beginPage()
-
-            ctx.cgContext.interpolationQuality = .high
-
-            image.draw(at: CGPoint(x: margin, y: margin))
+            let pdfData = pdfRenderer.pdfData { (context) in
+                context.beginPage()
+                let imageAspectRatio = self.size.width / self.size.height
+                let pageAspectRatio = pageSize.width / pageSize.height
+                
+                var imageRectWidth: CGFloat
+                var imageRectHeight: CGFloat
+                
+                if imageAspectRatio > pageAspectRatio {
+                    // Image is more wide than the page, fit to width
+                    imageRectWidth = pageSize.width
+                    imageRectHeight = imageRectWidth / imageAspectRatio
+                } else {
+                    // Image is taller or same aspect ratio, fit to height
+                    imageRectHeight = pageSize.height
+                    imageRectWidth = imageRectHeight * imageAspectRatio
+                }
+                
+                let imageRectX = (pageSize.width - imageRectWidth) / 2  // Horizontally center
+                let imageRectY = (pageSize.height - imageRectHeight) / 2  // Vertically center
+                let imageRect = CGRect(x: imageRectX, y: imageRectY, width: imageRectWidth, height: imageRectHeight)
+                
+                self.draw(in: imageRect)
+            }
+            return pdfData
         }
-
-        return data
-    }
-
+    
     /// Function gathered from [here](https://stackoverflow.com/questions/44462087/how-to-convert-a-uiimage-to-a-cvpixelbuffer)
     /// to convert UIImage to CVPixelBuffer
     ///
@@ -142,6 +174,27 @@ extension UIImage {
             return UIImage(cgImage: cgImage)
         } else {
             return UIImage(ciImage: ciImage, scale: 1.0, orientation: .up)
+        }
+    }
+
+    /// Creates UIImage from pdf page
+    func fromPDF(at page: Int) -> UIImage? {
+        guard let data = self.pdfData() else { return nil }
+        guard let provider = CGDataProvider(data: data as CFData) else { return nil }
+        guard let document = CGPDFDocument(provider) else { return nil }
+        guard let page = document.page(at: page) else { return nil }
+
+        let pageRect = page.getBoxRect(.mediaBox)
+        let renderer = UIGraphicsImageRenderer(size: pageRect.size)
+
+        return renderer.image { ctx in
+            UIColor.white.set()
+            ctx.fill(pageRect)
+
+            ctx.cgContext.translateBy(x: 0.0, y: pageRect.size.height)
+            ctx.cgContext.scaleBy(x: 1.0, y: -1.0)
+
+            ctx.cgContext.drawPDFPage(page)
         }
     }
 }

@@ -2,6 +2,7 @@
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22154" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_12" orientation="portrait" appearance="light"/>
     <dependencies>
+        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22130"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -47,6 +48,11 @@
                         <constraint firstItem="NCa-Px-c5h" firstAttribute="top" secondItem="m4U-hX-5ar" secondAttribute="top" id="dZM-DI-HE1"/>
                         <constraint firstItem="O1L-Il-UJw" firstAttribute="centerX" secondItem="m4U-hX-5ar" secondAttribute="centerX" id="usa-tV-PHO"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ISu-nZ-utL">
                     <rect key="frame" x="20" y="149" width="353" height="70"/>
@@ -73,6 +79,11 @@
                         <constraint firstItem="2V1-o4-DyT" firstAttribute="centerY" secondItem="ISu-nZ-utL" secondAttribute="centerY" id="Scb-5w-McR"/>
                         <constraint firstItem="2V1-o4-DyT" firstAttribute="centerX" secondItem="ISu-nZ-utL" secondAttribute="centerX" id="vff-qA-8cO"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                 </view>
                 <view contentMode="scaleToFill" restorationIdentifier="CameraActionSheet" translatesAutoresizingMaskIntoConstraints="NO" id="5NJ-FY-baS">
                     <rect key="frame" x="20" y="239" width="353" height="70"/>
@@ -99,6 +110,11 @@
                         <constraint firstItem="ABB-W6-tOg" firstAttribute="top" secondItem="5NJ-FY-baS" secondAttribute="top" id="teQ-qb-g3J"/>
                         <constraint firstItem="AQa-EP-fpX" firstAttribute="centerY" secondItem="5NJ-FY-baS" secondAttribute="centerY" id="w2P-C7-Hxu"/>
                     </constraints>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
+                            <integer key="value" value="15"/>
+                        </userDefinedRuntimeAttribute>
+                    </userDefinedRuntimeAttributes>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Nje-gq-EWR">
                     <rect key="frame" x="20" y="329" width="353" height="70"/>
