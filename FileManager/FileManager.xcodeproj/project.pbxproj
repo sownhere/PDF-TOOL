@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		FA0F1A832C32E41400BECA2F /* CustomToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1A822C32E41400BECA2F /* CustomToolbar.swift */; };
+		FA0F1A832C32E41400BECA2F /* CustomToolbarForHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1A822C32E41400BECA2F /* CustomToolbarForHomeView.swift */; };
 		FA0F1A852C32EB4800BECA2F /* ToolbarStateManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0F1A842C32EB4800BECA2F /* ToolbarStateManager.swift */; };
 		FA1090B42C22617300BB1437 /* FileManager.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B22C22617300BB1437 /* FileManager.xcdatamodeld */; };
 		FA1090B82C2266A300BB1437 /* CoreDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA1090B72C2266A300BB1437 /* CoreDataManager.swift */; };
@@ -80,6 +80,8 @@
 		FA7851792C3687DB00CDBEF6 /* CaptureSession+Focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA7851492C3687DB00CDBEF6 /* CaptureSession+Focus.swift */; };
 		FA81DBEB2C30A22B00428A09 /* MoreButtonActionSheetViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA81DBE92C30A22B00428A09 /* MoreButtonActionSheetViewController.swift */; };
 		FA81DBEC2C30A22B00428A09 /* MoreButtonActionSheet.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA81DBEA2C30A22B00428A09 /* MoreButtonActionSheet.xib */; };
+		FACEC5FE2C523E9300768491 /* CustomToolbarButtonForPDF.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACEC5FD2C523E9300768491 /* CustomToolbarButtonForPDF.swift */; };
+		FACEC6002C534BEE00768491 /* DrawPDFViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACEC5FF2C534BEE00768491 /* DrawPDFViewController.swift */; };
 		FAF7661D2C1FE8AD00DE9D05 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */; };
 		FAF7661F2C1FE8AD00DE9D05 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */; };
 		FAF766212C1FE8AD00DE9D05 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAF766202C1FE8AD00DE9D05 /* HomeViewController.swift */; };
@@ -97,7 +99,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		FA0F1A822C32E41400BECA2F /* CustomToolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolbar.swift; sourceTree = "<group>"; };
+		FA0F1A822C32E41400BECA2F /* CustomToolbarForHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolbarForHomeView.swift; sourceTree = "<group>"; };
 		FA0F1A842C32EB4800BECA2F /* ToolbarStateManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarStateManager.swift; sourceTree = "<group>"; };
 		FA1090B32C22617300BB1437 /* FileManager.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FileManager.xcdatamodel; sourceTree = "<group>"; };
 		FA1090B72C2266A300BB1437 /* CoreDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataManager.swift; sourceTree = "<group>"; };
@@ -188,6 +190,8 @@
 		FA7851492C3687DB00CDBEF6 /* CaptureSession+Focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CaptureSession+Focus.swift"; sourceTree = "<group>"; };
 		FA81DBE92C30A22B00428A09 /* MoreButtonActionSheetViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreButtonActionSheetViewController.swift; sourceTree = "<group>"; };
 		FA81DBEA2C30A22B00428A09 /* MoreButtonActionSheet.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MoreButtonActionSheet.xib; sourceTree = "<group>"; };
+		FACEC5FD2C523E9300768491 /* CustomToolbarButtonForPDF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomToolbarButtonForPDF.swift; sourceTree = "<group>"; };
+		FACEC5FF2C534BEE00768491 /* DrawPDFViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawPDFViewController.swift; sourceTree = "<group>"; };
 		FAF766192C1FE8AD00DE9D05 /* FileManager.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FileManager.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FAF7661C2C1FE8AD00DE9D05 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FAF7661E2C1FE8AD00DE9D05 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -269,7 +273,8 @@
 				FAF766372C200FCA00DE9D05 /* OneCellCollectionViewCell.swift */,
 				FAF766352C20041C00DE9D05 /* HeaderCollectionView.swift */,
 				FA37CA4C2C2BB0F600178886 /* GridCell.swift */,
-				FA0F1A822C32E41400BECA2F /* CustomToolbar.swift */,
+				FA0F1A822C32E41400BECA2F /* CustomToolbarForHomeView.swift */,
+				FACEC5FD2C523E9300768491 /* CustomToolbarButtonForPDF.swift */,
 			);
 			path = Others;
 			sourceTree = "<group>";
@@ -288,6 +293,7 @@
 			children = (
 				FA6C80692C47629000908E62 /* ViewPDFViewController.swift */,
 				FA6C806B2C4762C600908E62 /* PDFPageViewController.swift */,
+				FACEC5FF2C534BEE00768491 /* DrawPDFViewController.swift */,
 			);
 			path = PDFView;
 			sourceTree = "<group>";
@@ -680,7 +686,7 @@
 				FAF7661D2C1FE8AD00DE9D05 /* AppDelegate.swift in Sources */,
 				FA355BCE2C21C1E6002FAC4A /* RecentsViewController.swift in Sources */,
 				FA0F1A852C32EB4800BECA2F /* ToolbarStateManager.swift in Sources */,
-				FA0F1A832C32E41400BECA2F /* CustomToolbar.swift in Sources */,
+				FA0F1A832C32E41400BECA2F /* CustomToolbarForHomeView.swift in Sources */,
 				FA7851712C3687DB00CDBEF6 /* QuadrilateralView.swift in Sources */,
 				FA6C806A2C47629000908E62 /* ViewPDFViewController.swift in Sources */,
 				FA6C806E2C47A8F300908E62 /* ViewPDFViewModel.swift in Sources */,
@@ -689,6 +695,7 @@
 				FAF7C2BC2C3E6A6A002FA432 /* MultiPageScanSessionViewController.swift in Sources */,
 				FA78516C2C3687DB00CDBEF6 /* EditScanViewController.swift in Sources */,
 				FA7851622C3687DB00CDBEF6 /* CGImagePropertyOrientation.swift in Sources */,
+				FACEC6002C534BEE00768491 /* DrawPDFViewController.swift in Sources */,
 				FA37CA4B2C2944F900178886 /* FileAndFolderManager.swift in Sources */,
 				FA7851752C3687DB00CDBEF6 /* Transformable.swift in Sources */,
 				FA7851672C3687DB00CDBEF6 /* UIImage+Orientation.swift in Sources */,
@@ -698,6 +705,7 @@
 				FA78516B2C3687DB00CDBEF6 /* ZoomGestureController.swift in Sources */,
 				FA78515A2C3687DB00CDBEF6 /* CaptureSessionManager.swift in Sources */,
 				FA78515F2C3687DB00CDBEF6 /* AVCaptureVideoOrientation+Utils.swift in Sources */,
+				FACEC5FE2C523E9300768491 /* CustomToolbarButtonForPDF.swift in Sources */,
 				FA7851702C3687DB00CDBEF6 /* CIRectangleDetector.swift in Sources */,
 				FA3908EB2C4E1B9700A70723 /* MyPDFKitToolPickerModel.swift in Sources */,
 				FA1090B82C2266A300BB1437 /* CoreDataManager.swift in Sources */,

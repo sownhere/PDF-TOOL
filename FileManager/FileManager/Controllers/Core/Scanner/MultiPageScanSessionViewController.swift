@@ -81,17 +81,7 @@ public class MultiPageScanSessionViewController: UIViewController {
 
         self.setupViews()
     }
-    
-//    override public func viewWillAppear(_ animated: Bool) {
-//        super.viewWillAppear(animated)
-//        self.navigationController?.setNavigationBarHidden(false, animated: true)
-//        self.navigationController?.setToolbarHidden(false, animated: true)
-//        navigationController?.interactivePopGestureRecognizer?.isEnabled = false
-//        self.navigationController?.navigationBar.backgroundColor = .white
-//        self.navigationController?.toolbar.backgroundColor = .white
-//        self.reloadCurrentPage()
-//        
-//    }
+
     override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
@@ -129,19 +119,24 @@ public class MultiPageScanSessionViewController: UIViewController {
         NSLayoutConstraint.activate(pageControlConstraints)
         
         // Navigation
-//        self.navigationController?.navigationBar.isTranslucent = false
+
         self.navigationItem.rightBarButtonItem = self.saveButton
         
         // Toolbar
-//        self.navigationController?.toolbar.isTranslucent = false
+
+
+        // Create a UIBarButtonItem
         let editItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(handleEdit))
+        let drawItem = UIBarButtonItem(image: UIImage(systemName: "pencil"), style: .plain, target: self, action: #selector(customButtonPressed))
+        let signItem = UIBarButtonItem(image: UIImage(systemName: "signature"), style: .plain, target: self, action: #selector(customButtonPressed))
+        let totextItem = UIBarButtonItem(image: UIImage(systemName: "doc.text"), style: .plain, target: self, action: #selector(customButtonPressed))
         let deleteItem = UIBarButtonItem(barButtonSystemItem: .trash, target: self, action: #selector(handleTrash))
         let rotateIconImage = UIImage(named: "rotate", in: Bundle(for: MultiPageScanSessionViewController.self), compatibleWith: nil)
         let rotateItem = UIBarButtonItem(image: rotateIconImage, style: .plain, target: self, action: #selector(handleRotate))
         
         let flexibleItem = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
         
-        self.toolbarItems = [editItem, flexibleItem, rotateItem, flexibleItem, deleteItem]
+        self.toolbarItems = [editItem, flexibleItem, drawItem, flexibleItem, signItem, flexibleItem, rotateItem, flexibleItem, totextItem, flexibleItem, deleteItem]
     }
     
     private func getCurrentViewController()->ScannedPageViewController{
@@ -186,7 +181,13 @@ public class MultiPageScanSessionViewController: UIViewController {
                 let direction:UIPageViewController.NavigationDirection = (newIndex == 0 ? .forward : .reverse)
                 self.gotoPage(index: newIndex, direction: direction)
             } else {
-                self.navigationController?.popViewController(animated: true)
+                if let imageScannerController = navigationController as? ImageScannerController {
+                    if let firstViewController = navigationController?.viewControllers.first, firstViewController == self {
+                        imageScannerController.imageScannerDelegate?.imageScannerControllerDidCancel(imageScannerController)
+                    } else {
+                        self.navigationController?.popViewController(animated: true)
+                    }
+                }
             }
         }
     }
@@ -205,11 +206,11 @@ public class MultiPageScanSessionViewController: UIViewController {
     }
     
     @objc private func handleRotate(){
-//        if let currentItem = self.getCurrentItem(){
-//            currentItem.rotation -= 90.0
-//            self.getCurrentViewController().reRender(item: currentItem)
-//        }
         print("xu ly xoay anh o day")
+    }
+    
+    @objc func customButtonPressed() {
+        print("Custom button pressed")
     }
     
     @objc private func handleTrash(){
@@ -225,20 +226,6 @@ public class MultiPageScanSessionViewController: UIViewController {
         alertController.addAction(cancelAction)
         self.present(alertController, animated: true, completion: nil)
     }
-    
-//    @objc private func handleEdit(){
-//        if let currentIndex = self.getCurrentPageIndex(){
-//            let currentItem = self.scanSession.imageScannerResults[currentIndex]
-//            
-//            let editViewController = EditScanViewController(imagecannerResult: currentItem, rotateImage: false)
-//            editViewController.delegate = self
-//            editViewController.modalPresentationStyle = .fullScreen
-//            let navController = UINavigationController(rootViewController: editViewController)
-//            self.present(navController, animated: true, completion: nil)
-//        } else {
-//            fatalError("Current viewcontroller cannot be found")
-//        }
-//    }
     
     @objc private func handleEdit(){
         if let currentIndex = self.getCurrentPageIndex(){
@@ -304,20 +291,6 @@ extension MultiPageScanSessionViewController:UIPageViewControllerDataSource{
         }
         return nil
     }
-    
-//    private func reloadCurrentPage() {
-//        DispatchQueue.main.async { // Đảm bảo mọi thay đổi giao diện đều trên main thread
-//            if let currentPageIndex = self.getCurrentPageIndex() {
-//                let currentViewController = self.pages[currentPageIndex] as ScannedPageViewController
-// 
-//                currentViewController.reRender(item: currentViewController.imageScannerResult)
-//                
-//            }
-//        }
-//    }
-
-
-    
 }
 
 extension MultiPageScanSessionViewController:UIPageViewControllerDelegate{

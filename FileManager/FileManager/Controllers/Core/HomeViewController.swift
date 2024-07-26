@@ -15,11 +15,11 @@ class HomeViewController: UIViewController, UICollectionViewDelegate, UICollecti
     
     // MARK: - Setup Custom toolbar
     
-    var customToolbar: CustomToolbar!
+    var customToolbar: CustomToolbarForHomeView!
     
     private func setupCustomToolbar() {
         let tabBarHeight = self.tabBarController?.tabBar.frame.size.height ?? 49
-        customToolbar = CustomToolbar(frame: CGRect(x: 0, y: view.frame.size.height - tabBarHeight, width: view.frame.size.width, height: tabBarHeight))
+        customToolbar = CustomToolbarForHomeView(frame: CGRect(x: 0, y: view.frame.size.height - tabBarHeight, width: view.frame.size.width, height: tabBarHeight))
         customToolbar.backgroundColor = .darkGray
         customToolbar.buttonAction = { [weak self] buttonIndex in
             switch buttonIndex {

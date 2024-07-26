@@ -1,6 +1,6 @@
 import UIKit
 
-class CustomToolbar: UIView {
+class CustomToolbarForHomeView: UIView {
     var buttons: [UIButton] = []
     var buttonAction: ((Int) -> Void)?
 
@@ -52,7 +52,7 @@ class CustomToolbar: UIView {
 }
 // CustomToolbar.swift
 
-extension CustomToolbar {
+extension CustomToolbarForHomeView {
     func refreshToolbarState() {
         let stateManager = ToolbarStateManager.shared
         let hasSelectedItems = !stateManager.selectedItems.isEmpty
