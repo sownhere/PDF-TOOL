@@ -100,7 +100,7 @@ public final class ScannerViewController: UIViewController {
     }()
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
-        let activityIndicator = UIActivityIndicatorView(style: .gray)
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         return activityIndicator
@@ -138,8 +138,14 @@ public final class ScannerViewController: UIViewController {
         navigationController?.navigationBar.setBackgroundImage(UIImage(), for: .default)
         navigationController?.navigationBar.addSubview(visualEffectView)
         navigationController?.navigationBar.sendSubviewToBack(visualEffectView)
-        navigationController?.navigationBar.barStyle = .blackTranslucent
-        
+        // Check if ios is 13 or greater
+        if #available(iOS 13.0, *) {
+            navigationController?.navigationBar.barStyle = .default
+        } else {
+            navigationController?.navigationBar.barStyle = .blackTranslucent
+        }
+//        navigationController?.navigationBar.barStyle = .blackTranslucent
+//
         navigationController?.setToolbarHidden(true, animated: true)
         
         updateCounterButton()
@@ -148,11 +154,22 @@ public final class ScannerViewController: UIViewController {
     override public func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         videoPreviewLayer.frame = view.layer.bounds
+        // Check if ios is 13 or greater
+        if #available(iOS 13.0, *) {
+            let statusBarHeight = view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+            let visualEffectRect = self.navigationController?.navigationBar.bounds.insetBy(dx: 0, dy: -(statusBarHeight)).offsetBy(dx: 0, dy: -statusBarHeight)
+            
+            visualEffectView.frame = visualEffectRect ?? CGRect.zero
+        } else {
+            let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+            let visualEffectRect = self.navigationController?.navigationBar.bounds.insetBy(dx: 0, dy: -(statusBarHeight)).offsetBy(dx: 0, dy: -statusBarHeight)
+            
+            visualEffectView.frame = visualEffectRect ?? CGRect.zero
+        }
+//        let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
+//        let visualEffectRect = self.navigationController?.navigationBar.bounds.insetBy(dx: 0, dy: -(statusBarHeight)).offsetBy(dx: 0, dy: -statusBarHeight)
         
-        let statusBarHeight = UIApplication.shared.statusBarFrame.size.height
-        let visualEffectRect = self.navigationController?.navigationBar.bounds.insetBy(dx: 0, dy: -(statusBarHeight)).offsetBy(dx: 0, dy: -statusBarHeight)
-        
-        visualEffectView.frame = visualEffectRect ?? CGRect.zero
+//        visualEffectView.frame = visualEffectRect ?? CGRect.zero
     }
 
     override public func viewWillDisappear(_ animated: Bool) {

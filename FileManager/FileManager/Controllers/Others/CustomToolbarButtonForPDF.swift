@@ -10,16 +10,20 @@ import UIKit
 
 
 class CustomToolbarButtonForPDF: UIView {
+    private var addButton: UIButton?
     private var drawButton: UIButton?
     private var signButton: UIButton?
     private var toTextButton: UIButton?
     private var rotateButton: UIButton?
+    private var deleteButton: UIButton?
     private var stackView: UIStackView?
     
+    var addButtonAction: (() -> Void)?
     var drawButtonAction: (() -> Void)?
     var signButtonAction: (() -> Void)?
     var toTextButtonAction: (() -> Void)?
     var rotateButtonAction: (() -> Void)?
+    var deleteButtonAction: (() -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -31,6 +35,10 @@ class CustomToolbarButtonForPDF: UIView {
     }
     
     private func setUpViews() {
+        addButton = UIButton()
+        addButton?.setImage(UIImage(systemName: "plus"), for: .normal)
+        addButton?.addTarget(self, action: #selector(addButtonPressed), for: .touchUpInside)
+        
         drawButton = UIButton()
         drawButton?.setImage(UIImage(systemName: "pencil"), for: .normal)
         drawButton?.addTarget(self, action: #selector(drawButtonPressed), for: .touchUpInside)
@@ -47,7 +55,11 @@ class CustomToolbarButtonForPDF: UIView {
         rotateButton?.setImage(UIImage(systemName: "arrow.clockwise"), for: .normal)
         rotateButton?.addTarget(self, action: #selector(rotateButtonPressed), for: .touchUpInside)
         
-        stackView = UIStackView(arrangedSubviews: [drawButton!, signButton!, toTextButton!, rotateButton!])
+        deleteButton = UIButton()
+        deleteButton?.setImage(UIImage(systemName: "trash"), for: .normal)
+        deleteButton?.addTarget(self, action: #selector(deleteButtonPressed), for: .touchUpInside)
+        
+        stackView = UIStackView(arrangedSubviews: [addButton!, drawButton!, signButton!, toTextButton!, rotateButton!, deleteButton!])
         stackView?.axis = .horizontal
         stackView?.distribution = .fillEqually
         stackView?.spacing = 5
@@ -64,6 +76,10 @@ class CustomToolbarButtonForPDF: UIView {
         ])
     }
     
+    @objc private func addButtonPressed() {
+        addButtonAction?()
+    }
+    
     @objc private func drawButtonPressed() {
         drawButtonAction?()
     }
@@ -78,6 +94,10 @@ class CustomToolbarButtonForPDF: UIView {
     
     @objc private func rotateButtonPressed() {
         rotateButtonAction?()
+    }
+    
+    @objc private func deleteButtonPressed() {
+        deleteButtonAction?()
     }
     
 }

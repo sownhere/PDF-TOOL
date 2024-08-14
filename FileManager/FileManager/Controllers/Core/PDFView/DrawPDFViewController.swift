@@ -13,13 +13,20 @@ import PDFKit
 class DrawPDFViewController: UIViewController, PDFViewDelegate {
     
     private var fileUrl: URL
-    
+//    var pdfDocument: PDFDocument?
     var document: Document?
 
     var overlayCoordinator: MyOverlayCoordinator = MyOverlayCoordinator()
 
     var viewPDFViewModel: ViewPDFViewModel?
     private var lastContentOffset: CGFloat = 0
+    
+    lazy private var saveButton: UIBarButtonItem = {
+        let title = NSLocalizedString("wescan.edit.button.save", tableName: nil, bundle: Bundle(for: MultiPageScanSessionViewController.self), value: "Save", comment: "Save button")
+        let button = UIBarButtonItem(title: title, style: .done, target: self, action: #selector(handleSave))
+        button.tintColor = navigationController?.navigationBar.tintColor
+        return button
+    }()
     
     private lazy var toolbar: CustomToolbarButtonForPDF = {
         let toolbar = CustomToolbarButtonForPDF()
@@ -37,6 +44,10 @@ class DrawPDFViewController: UIViewController, PDFViewDelegate {
         self.fileUrl = fileURL
         super.init(nibName: nil, bundle: nil)
         self.viewPDFViewModel = ViewPDFViewModel(fileUrl: fileURL)
+//        self.pdfDocument = self.viewPDFViewModel?.document
+        viewPDFViewModel?.onDocumentOpenSuccess = { [weak self] in
+                    self?.loadPDF()
+                }
         
     }
     
@@ -46,6 +57,7 @@ class DrawPDFViewController: UIViewController, PDFViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.setupNavigationBar()
         setUpPDFView()
         self.pdfView.pageOverlayViewProvider = self.overlayCoordinator
         self.pdfView.isInMarkupMode = true
@@ -59,6 +71,10 @@ class DrawPDFViewController: UIViewController, PDFViewDelegate {
 //        setupToolbar()
     }
     
+    // Setup Navigation Bar
+    func setupNavigationBar() {
+        self.navigationItem.rightBarButtonItem = saveButton
+    }
 
     // Set up the PDFView
     func setUpPDFView() {
@@ -81,23 +97,56 @@ class DrawPDFViewController: UIViewController, PDFViewDelegate {
             print("ERROR")
             return
         }
-        
-        if let document = viewPDFViewModel.document {
+//        viewPDFViewModel.uiDocument?.open(completionHandler: { (succes) in
+//            if succes {
+                viewPDFViewModel.uiDocument?.pdfDocument?.delegate = self// PDFDocumentDelegate
+                self.pdfView.document = self.viewPDFViewModel?.uiDocument?.pdfDocument
+                self.displaysDocument()
+//            }
+//        })
+//        if let document = viewPDFViewModel.document {
+//            document.delegate = self
 //            pdfView.document = document
-            self.viewPDFViewModel?.uiDocument?.open(completionHandler: { (succes) in
-                if succes {
-                    self.viewPDFViewModel?.uiDocument?.pdfDocument?.delegate = self// PDFDocumentDelegate
-                    self.pdfView.document = self.viewPDFViewModel?.uiDocument?.pdfDocument
-                    self.displaysDocument()
+//
+//            displaysDocument()
+//        } else {
+//            print("Failed to load the PDF document.")
+//        }
 
-                } else {
-                    print("Fail to load pdf")
-                }
-            })
-            
-        } else {
-            print("Failed to load the PDF document.")
+    }
+    
+    @objc func handleSave() {
+        save()
+    }
+    
+    private func save() {
+    
+        print("   2 - Saves document")
+
+        let url = self.fileUrl
+        guard let document = self.viewPDFViewModel?.uiDocument else {
+            return
         }
+
+        self.pdfView.document = nil
+        
+        self.dismiss(animated: true)
+        
+        print("Will then try to save at URL : \(url)")
+        
+        document.close(completionHandler: { [weak self] (success) in
+            guard let self = self else { return }
+            if success {
+                document.save(to: url,
+                              for: .forOverwriting,
+                              completionHandler: { (success) in
+                    print(" 2.4 - Saved at \(url)")
+                })
+                self.navigationController?.popViewController(animated: true)
+            } else {
+                print("Sorry, error !")
+            }
+        })
     }
 
     private func displaysDocument() {

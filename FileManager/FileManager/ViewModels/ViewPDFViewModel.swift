@@ -10,8 +10,6 @@ import UIKit
 import PDFKit
 
 class ViewPDFViewModel {
-
-    
     
     var fileUrl: URL?
     var document: PDFDocument?
@@ -19,13 +17,24 @@ class ViewPDFViewModel {
     var overlayCoordinator: MyOverlayCoordinator = MyOverlayCoordinator()
     var page: PDFPage?
     var image: UIImage?
+    
+    var onDocumentOpenSuccess: (() -> Void)?
+    
     init(fileUrl: URL) {
         
         self.fileUrl = fileUrl
-
+        
         if let document = PDFDocument(url: fileUrl as URL) {
             self.document = document
             self.uiDocument = Document(fileURL: fileUrl)
+            
+            uiDocument?.open(completionHandler: { (success) in
+                if success {
+                    self.onDocumentOpenSuccess?()
+                } else {
+                    print("Error loading PDF document")
+                }
+            })
         } else {
             // Handle document loading error
             print("Error loading PDF document")
@@ -33,34 +42,34 @@ class ViewPDFViewModel {
         }
     }
     
-//    private func loadPDF() {
-//
-//
-//        
-//        if let document = self.document {
-//            pdfView.document = document
-////            self.uiDocument?.open(completionHandler: { (succes) in
-////                if succes {
-////                    self.uiDocument?.pdfDocument?.delegate = self// PDFDocumentDelegate
-////                    self.pdfView.document = self.viewPDFViewModel?.uiDocument?.pdfDocument
-////                    self.displaysDocument()
-////
-////                } else {
-////                    print("Fail to load pdf")
-////                }
-////            })
-//            uiDocument?.open(completionHandler: { (succes) in
-//                if succes {
-//                    self.uiDocument?.pdfDocument?.delegate = self
-//                    self.displaysDocument()
-//                }
-//            })
-//            
-//        } else {
-//            print("Failed to load the PDF document.")
-//        }
-//    }
-
+    //    private func loadPDF() {
+    //
+    //
+    //
+    //        if let document = self.document {
+    //            pdfView.document = document
+    ////            self.uiDocument?.open(completionHandler: { (succes) in
+    ////                if succes {
+    ////                    self.uiDocument?.pdfDocument?.delegate = self// PDFDocumentDelegate
+    ////                    self.pdfView.document = self.viewPDFViewModel?.uiDocument?.pdfDocument
+    ////                    self.displaysDocument()
+    ////
+    ////                } else {
+    ////                    print("Fail to load pdf")
+    ////                }
+    ////            })
+    //            uiDocument?.open(completionHandler: { (succes) in
+    //                if succes {
+    //                    self.uiDocument?.pdfDocument?.delegate = self
+    //                    self.displaysDocument()
+    //                }
+    //            })
+    //
+    //        } else {
+    //            print("Failed to load the PDF document.")
+    //        }
+    //    }
+    
     private func displaysDocument() {
         guard let document = self.document,
               let page: MyPDFPage = document.page(at: 0) as? MyPDFPage else {

@@ -15,6 +15,12 @@ public enum MyPencilKitOverPDFDocumentError: Error {
 class Document: UIDocument {
     
     var pdfDocument: PDFDocument?
+    
+//    init(document: PDFDocument) {
+//        self.pdfDocument = document
+//        super.init(fileURL: URL(fileURLWithPath: <#String#>))
+//    }
+    
  
     override func load(fromContents contents: Any,
                        ofType typeName: String?) throws {

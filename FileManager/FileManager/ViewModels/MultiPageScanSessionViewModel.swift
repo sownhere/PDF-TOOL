@@ -10,7 +10,7 @@ import UIKit
 
 public class MultiPageScanSessionViewModel {
     
-    public private(set) var imageScannerResults:Array<ImageScannerResults> = []
+    public var imageScannerResults:Array<ImageScannerResults> = []
     
     public init(images:[UIImage]? = nil){
         if let images {
@@ -20,13 +20,15 @@ public class MultiPageScanSessionViewModel {
                     [weak self] quad in
                     
                     if let quad = quad {
+                        let enhancedImageScan = ImageScannerScan(image: (CIImage(image: image)?.applyingAdaptiveThreshold())!)
                         let croppedImage = ImageScannerScan(image: self!.croppedImage(for: quad , in: image)!)
-                        let imageScannerResult = ImageScannerResults(detectedRectangle: quad, originalScan: imageScan, croppedScan: croppedImage, enhancedScan: nil)
+                        let imageScannerResult = ImageScannerResults(detectedRectangle: quad, originalScan: imageScan, croppedScan: croppedImage, enhancedScan: enhancedImageScan)
                         self!.imageScannerResults.append(imageScannerResult)
                     } else {
+                        let enhancedImageScan = ImageScannerScan(image: (CIImage(image: image)?.applyingAdaptiveThreshold())!)
                         let quad = self!.defaultQuad(allOfImage: image)
                         let croppedImage = ImageScannerScan(image: self!.croppedImage(for: quad , in: image)!)
-                        let imageScannerResult = ImageScannerResults(detectedRectangle: quad, originalScan: imageScan, croppedScan: croppedImage, enhancedScan: nil)
+                        let imageScannerResult = ImageScannerResults(detectedRectangle: quad, originalScan: imageScan, croppedScan: croppedImage, enhancedScan: enhancedImageScan)
                         self!.imageScannerResults.append(imageScannerResult)
                     }
                     

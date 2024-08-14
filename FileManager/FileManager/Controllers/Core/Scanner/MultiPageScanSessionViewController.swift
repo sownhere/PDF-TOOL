@@ -210,7 +210,13 @@ public class MultiPageScanSessionViewController: UIViewController {
     }
     
     @objc func customButtonPressed() {
-        print("Custom button pressed")
+        for index in scanSession.imageScannerResults.indices {
+            scanSession.imageScannerResults[index].doesUserPreferEnhancedScan?.toggle()
+        }
+        // reload all pages
+        for page in pages {
+            page.reRender(item: scanSession.imageScannerResults[pages.firstIndex(of: page)!])
+        }
     }
     
     @objc private func handleTrash(){

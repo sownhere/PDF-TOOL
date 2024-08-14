@@ -60,7 +60,11 @@ class ScannedPageViewController: UIViewController {
         NSLayoutConstraint.activate(constraints)
         
         // Spinner
-        self.activityIndicator = UIActivityIndicatorView(style: .white)
+        if #available(iOS 13, *) {
+            self.activityIndicator = UIActivityIndicatorView(style: .medium)
+        } else {
+            self.activityIndicator = UIActivityIndicatorView(style: .white)
+        }
         self.activityIndicator.startAnimating()
         self.activityIndicator.hidesWhenStopped = true
         self.activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -77,9 +81,14 @@ class ScannedPageViewController: UIViewController {
         if self.renderedImageView.image == nil {
             self.activityIndicator.isHidden = false
             self.activityIndicator.startAnimating()
+            if imageScannerResult.doesUserPreferEnhancedScan == true {
+                self.renderedImageView.image = self.imageScannerResult.enhancedScan?.image
+                self.activityIndicator.stopAnimating()
+            } else {
+                self.renderedImageView.image = self.imageScannerResult.croppedScan.image
+                self.activityIndicator.stopAnimating()
+            }
             
-            self.renderedImageView.image = self.imageScannerResult.croppedScan.image
-            self.activityIndicator.stopAnimating()
             
         }
     } 
@@ -87,6 +96,11 @@ class ScannedPageViewController: UIViewController {
     // MARK: - Public methods
     
     public func reRender(item:ImageScannerResults){
+//        if imageScannerResult.doesUserPreferEnhancedScan == true {
+//            self.renderedImageView.image = self.imageScannerResult.enhancedScan?.image
+//        } else {
+//            self.renderedImageView.image = self.imageScannerResult.croppedScan.image
+//        }
         self.renderedImageView.image = nil
         self.imageScannerResult = item
         self.render()

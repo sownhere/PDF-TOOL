@@ -105,8 +105,18 @@ final class ReviewViewController: UIViewController {
 
     private func setupToolbar() {
         guard enhancedImageIsAvailable else { return }
-
-        navigationController?.toolbar.barStyle = .blackTranslucent
+        // Check if ios is 13 or later
+        if #available(iOS 13.0, *) {
+            navigationController?.toolbar.barStyle = .default
+//            navigationController?.toolbar.tintColor = .white
+//            navigationController?.toolbar.barTintColor = .black
+//            navigationController?.toolbar.isTranslucent = true
+        } else {
+            navigationController?.toolbar.barStyle = .blackTranslucent
+//            navigationController?.toolbar.barTintColor = .black
+//            navigationController?.toolbar.isTranslucent = true
+        }
+//        navigationController?.toolbar.barStyle = .blackTranslucent
 
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
@@ -170,7 +180,7 @@ final class ReviewViewController: UIViewController {
     }
 
     @objc private func finishScan() {
-        guard let imageScannerController = navigationController as? ImageScannerController else { return }
+//        guard let imageScannerController = navigationController as? ImageScannerController else { return }
 
         var newResults = results
         newResults.croppedScan.rotate(by: rotationAngle)
